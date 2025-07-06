@@ -3,7 +3,7 @@ indicator("學習用59", overlay=true)
 
 upper = high >= ta.highest(high,20)
 lower = low <= ta.lowest(low,20)
-//■■■■■■ § ■■■■■ 不能 大於 ta.highest(high,20) 要大於等於
+//■■■■■■ § ■■■■■ 不能 大於 ta.highest(high,20) 要大於等於 
 
 
 //■■■■■■■■■■■■ 空值表示方式 ■■■■■■■■■■■■ 
