@@ -1,0 +1,41 @@
+//@version=6
+indicator("學習用59", overlay=true)
+
+upper = high >= ta.highest(high,20)
+lower = low <= ta.lowest(low,20)
+//■■■■■■ § ■■■■■ 不能 大於 ta.highest(high,20) 要大於等於
+
+
+//■■■■■■■■■■■■ 空值表示方式 ■■■■■■■■■■■■ 
+co = color(na)
+si1 = size.small
+
+
+//■■■■■■■■■■■■ if 結構 ■■■■■■■■■■■■ 
+if upper 
+    co := color.green
+    if (high-high[1])>=(high[1]-high[2])*3
+        si1 := size.huge
+        co := color.olive
+else if lower
+    co := color.red
+    if (low-low[1])<=(low[1]-low[2])*3 
+        si1 := size.huge
+
+
+plotshape(
+  series = upper or lower,
+  size = size.small,
+  color = co,
+  style = shape.circle,
+  show_last = 200
+  )
+
+plotshape(
+  series = (upper and (high-high[1])>=(high[1]-high[2])*3) or (lower and (low-low[1])<=(low[1]-low[2])*3 ),
+  size = size.large,
+  color = co,
+  style = shape.circle,
+  show_last = 200
+  )
+//■■■■■■ § ■■■■■ 斷行 空兩格 最後一個括號也屬於斷行，所以是空兩格
