@@ -6,7 +6,7 @@ indicator("學習用68", overlay=true)
 //線 顏色 粗細  
 //填滿色        
 //■■■■■■■■■■■■ 時間輸入方式 ■■■■■■■■■■■■ 
-timeNow = timestamp(2025, 5, 21, 1, 30)
+timeNow = timestamp("UTC+8", 2025,07,18,17,30)
 //■■■■■■■■■■■■ 時間輸出方式 ■■■■■■■■■■■■ 
 hr = hour(time)
 min = minute(time)
