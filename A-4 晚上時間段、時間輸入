@@ -1,0 +1,42 @@
+//@version=6
+indicator("學習用68", overlay=true)
+
+//■■■■■■■■■■■■ 從主體進行思考 ■■■■■■■■■■■■ 
+//主體 屬性修改 
+//線 顏色 粗細  
+//填滿色        
+//■■■■■■■■■■■■ 時間輸入方式 ■■■■■■■■■■■■ 
+timeNow = timestamp(2025, 5, 21, 1, 30)
+//■■■■■■■■■■■■ 時間輸出方式 ■■■■■■■■■■■■ 
+hr = hour(time)
+min = minute(time)
+
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■ 變數確立 條件確立
+//長短均線 數字
+quMA = ta.sma(close[1],14)
+slMA = ta.sma(close[1],56)
+//均線顏色黃色紅色
+quCol = color.rgb(255, 145, 0)
+slCol = color.rgb(255, 0, 0)
+//時間
+h = hour(time)
+m = minute(time)
+//是否為晚上時間(條件)
+isNig = bool(0)
+floTime = str.tonumber(str.tostring(h) + "." + str.tostring(m)) 
+if floTime>= 23.3 or floTime <=5.3
+    isNig := true
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■ 條件修改變數
+//晚上時間 線色改為藍色白色
+if isNig 
+    quCol := color.white
+    slCol := color.blue
+
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■ 畫線畫圖
+//快線
+plot(quMA, color = quCol)
+//慢線
+plot(slMA, color = slCol)
+//填滿色
+bgcolor(color = isNig? color.rgb(8, 0, 255, 74) : na)
+
