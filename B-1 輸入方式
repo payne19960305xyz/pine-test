@@ -1,0 +1,39 @@
+//@version=6
+strategy("學習用56", overlay=true )
+
+var DT = timestamp("UTC+8", 2025,7,18,8,30)
+plotshape(time == DT, style = shape.cross ,size = size.normal)
+
+quLength = input.int(14, "快線長" )
+slLength = input.int(56, "慢線長" )
+
+//長短均線 數字
+quMA = ta.sma(close[1],quLength)
+slMA = ta.sma(close[1],slLength)
+//均線顏色黃色紅色
+quCol = color.rgb(255, 0, 0)
+slCol = color.rgb(255, 145, 0)
+
+//快線
+plot(quMA, color = quCol)
+//慢線
+plot(slMA, color = slCol)
+
+
+
+
+
+//■■■■■string
+//input.string("SMA", title="均線類型", options=["SMA", "EMA", "WMA"])
+//■■■■■int
+//input.int(14, title="期數", minval=1, maxval=100)
+//■■■■■float
+//input.float(1.5, title="觸發門檻", step=0.1)
+//■■■■■bool
+//input.bool(true, title="顯示線條")
+//■■■■■timeframe()：時間週期選擇
+//input.timeframe("D", title="時間週期")
+//■■■■■color
+//input.color(color.red, title="均線顏色")
+//■■■■■資料來源
+//input.source(close, title="價格來源")
