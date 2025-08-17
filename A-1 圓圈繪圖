@@ -3,15 +3,15 @@ indicator("學習用59", overlay=true)
 
 upper = high >= ta.highest(high,20)
 lower = low <= ta.lowest(low,20)
-//■■■■■■ § ■■■■■ 不能 大於 ta.highest(high,20) 要大於等於 
+	//■■■■■■■■■  ▲✔✘  不能 大於 ta.highest(high,20) 要大於等於 
 
 
-//■■■■■■■■■■■■ 空值表示方式 ■■■■■■■■■■■■ 
+	//■■■■■■■■■  ⛫⛫⛩︎  空值表示方式 
 co = color(na)
 si1 = size.small
 
 
-//■■■■■■■■■■■■ if 結構 ■■■■■■■■■■■■ 
+	//■■■■■■■■■  ⛫⛫⛩︎  if 結構 
 if upper 
     co := color.green
     if (high-high[1])>=(high[1]-high[2])*3
@@ -22,7 +22,7 @@ else if lower
     if (low-low[1])<=(low[1]-low[2])*3 
         si1 := size.huge
 
-
+	//■■■■■■■■■  FF (( ■,●,○,□,▼  ))---※Θ★  
 plotshape(
   series = upper or lower,
   size = size.small,
@@ -38,4 +38,4 @@ plotshape(
   style = shape.circle,
   show_last = 200
   )
-//■■■■■■ § ■■■■■ 斷行 空兩格 最後一個括號也屬於斷行，所以是空兩格
+	//■■■■■■■■■  ▲✔✘  斷行 空兩格 最後一個括號也屬於斷行，所以是空兩格
