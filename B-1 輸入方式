@@ -1,6 +1,7 @@
 //@version=6
 strategy("學習用56", overlay=true )
 
+    //■■■■■■■■■   ☪𒀹𒀹  時間輸入方式
 var DT = timestamp("UTC+8", 2025,7,18,8,30)
 plotshape(time == DT, style = shape.cross ,size = size.normal)
 
