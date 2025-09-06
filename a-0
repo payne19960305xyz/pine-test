@@ -16,6 +16,20 @@ plotshape(
   show_last = 200
   )
 
+C-3	//■■■■■■■■■  ▲✔✘  系列值 的統計是來自每一次被呼叫 而不是每一根K線
+delta = (ta.highest(high, delta_num) - ta.lowest(low, delta_num))*delta_per,
+
+if tr_flag //如果過了開始交易日期
+    if qu_up
+        strategy.entry('long',  strategy.long, 1)
+        strategy.exit("close_long", "long", 
+                       qty_percent = 100, 
+                       limit = strategy.position_avg_price + delta,
+                       stop  = strategy.position_avg_price - delta
+                       )        
+
+
+
 
 
 //■■■■■■■■■  ⛫⛫⛩︎  ====================================================================================
