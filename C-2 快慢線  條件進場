@@ -1,0 +1,54 @@
+//@version=6
+strategy("學習用59", overlay=true, format = format.price)
+
+start_M = input.int(9)
+start_D = input.int(1)
+
+if high < low 
+    strategy.entry(".", strategy.short )
+bool tr_flag = time>= timestamp("UTC+8", 2025,start_M,start_D,00,00)
+
+
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■ 畫線 & 條件
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 輸入數字 畫快慢線 條件
+int input_qu = input.int(10)
+int input_sl = input.int(20)
+// ■■■■■■ 顏色
+color coqu = input.color(color.blue)
+color cosl = input.color(color.yellow)
+// ■■■■■■ 畫快慢線
+qu = ta.ema(close, input_qu)
+sl = ta.ema(close, input_sl)
+plot(qu, color = coqu) 
+plot(sl, color = cosl) 
+
+// ■■■■■■ 上下穿條件
+bool qu_up = ta.crossover (qu, sl)
+bool qu_do = ta.crossunder(qu, sl)
+
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 上下穿標記
+
+// ■■■■■■ 條件顏色
+color co_flag = color(na) 
+if qu_up
+    co_flag := color.green
+else if qu_do
+    co_flag := color.red
+
+// ■■■■■■ 畫線
+plotshape(
+  series = close + 1,
+  size = size.normal,
+  color = co_flag,
+  style = shape.circle  
+  )
+
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■ 交易動作
+if tr_flag
+    if qu_up
+        strategy.entry('long',  strategy.long, 100)
+    else if qu_do
+        strategy.entry('short', strategy.short, 100)
+
+
+
