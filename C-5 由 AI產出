@@ -1,0 +1,109 @@
+//@version=6
+strategy("學習用59_修正版", overlay=true, format = format.price)
+
+// 移除這行錯誤的邏輯
+// if high < low 
+//     strategy.entry(".", strategy.short )
+
+// ■■■■■■ 開始交易日期
+start_M = input.int(9)
+start_D = input.int(1)
+bool tr_flag = time >= timestamp("UTC+8", 2025, start_M, start_D, 00, 00)
+
+// ■■■■■■ 輸入數字 畫快慢線
+int input_qu = input.int(10, title="快線週期")
+int input_sl = input.int(20, title="慢線週期")
+
+// ■■■■■■ 快慢線 顏色
+color coqu = input.color(color.blue, title="快線顏色")
+color cosl = input.color(color.yellow, title="慢線顏色")
+
+// ■■■■■■ 畫快慢線
+qu = ta.ema(close, input_qu)
+sl = ta.ema(close, input_sl)
+plot(qu, color = coqu, title="快線") 
+plot(sl, color = cosl, title="慢線") 
+
+// ■■■■■■ 確立上下穿條件
+bool qu_up = ta.crossover(qu, sl)
+bool qu_do = ta.crossunder(qu, sl)
+
+// ■■■■■■ 上下穿標記
+color co_flag = color(na) 
+if qu_up
+    co_flag := color.green
+else if qu_do
+    co_flag := color.red
+
+plotshape(
+  series = close + 1,
+  size = size.normal,
+  color = co_flag,
+  style = shape.circle  
+  )
+
+// ■■■■■■ 止盈止損點位線 輸入
+delta_num = input.int(10, title="計算週期")
+delta_per = input.float(1.0, title="倍數")
+
+// ■■■■■■ 修正：移除逗號，正確計算 delta_p
+delta_p = (ta.highest(high, delta_num) - ta.lowest(low, delta_num)) * delta_per
+
+// ■■■■■■ 只有在交易信號時才更新 delta
+var delta = float(na)
+
+// ■■■■■■ 交易動作 - 修正邏輯
+if tr_flag
+    // 先關閉現有部位再開新部位
+    if qu_up and strategy.position_size <= 0  // 只有在沒有多單時才開多單
+        if strategy.position_size < 0
+            strategy.close("short")  // 先關閉空單
+        delta := delta_p  // 在開倉時設定 delta
+        strategy.entry('long', strategy.long, 1)
+        // 修正：使用當前收盤價而不是 position_avg_price（因為剛開倉時還沒有平均價）
+        strategy.exit("close_long", "long", 
+                       qty_percent = 100, 
+                       limit = close + delta,
+                       stop = close - delta
+                       )        
+        label.new(bar_index, high + 0.5, text="L", color = color.blue, size = size.small)
+
+    else if qu_do and strategy.position_size >= 0  // 只有在沒有空單時才開空單
+        if strategy.position_size > 0
+            strategy.close("long")  // 先關閉多單
+        delta := delta_p  // 在開倉時設定 delta
+        strategy.entry('short', strategy.short, 1)
+        // 修正：使用當前收盤價
+        strategy.exit("close_short", "short", 
+                       qty_percent = 100, 
+                       limit = close - delta,
+                       stop = close + delta
+                       )        
+        label.new(bar_index, low - 0.5, text="S", color = color.yellow, size = size.small)
+
+// ■■■■■■ 繪製確認線
+var position_avg_price = float(na)
+if strategy.position_size != 0
+    position_avg_price := strategy.position_avg_price
+else
+    position_avg_price := float(na)
+
+plot(position_avg_price, color = color.orange, linewidth=6, style= plot.style_linebr, title="入場均價") 
+
+// ■■■■■■ 止盈止損線 繪圖 - 修正邏輯
+var aline = float(na)  // 止盈線
+var bline = float(na)  // 止損線
+
+if strategy.position_size != 0
+    if strategy.position_size > 0  // 多單
+        aline := strategy.position_avg_price + delta  // 止盈
+        bline := strategy.position_avg_price - delta  // 止損
+    else  // 空單
+        aline := strategy.position_avg_price - delta  // 止盈
+        bline := strategy.position_avg_price + delta  // 止損
+else
+    aline := float(na)
+    bline := float(na)
+
+plot(aline, color = color.green, linewidth=3, style= plot.style_linebr, title="止盈線") 
+plot(bline, color = color.red, linewidth=3, style= plot.style_linebr, title="止損線")
