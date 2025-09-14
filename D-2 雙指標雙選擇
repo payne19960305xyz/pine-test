@@ -1,0 +1,78 @@
+//@version=6
+indicator("學習用59", overlay=true, format = format.price, max_labels_count = 500)
+
+
+// ■■■■■■ ■■■■■■■ M A C D  ■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■
+fast_length =12 //input(title = "Fast Length", defval = 12)
+slow_length =26 //input(title = "Slow Length", defval = 26)
+src =close //input(title = "Source", defval = close)
+signal_length =9 //input.int(title = "Signal Smoothing",  minval = 1, maxval = 50, defval = 9, display = display.data_window)
+sma_source ="EMA" //input.string(title = "Oscillator MA Type",  defval = "EMA", options = ["SMA", "EMA"], display = display.data_window)
+sma_signal ="EMA" // input.string(title = "Signal Line MA Type", defval = "EMA", options = ["SMA", "EMA"], display = display.data_window)
+// Calculating
+fast_ma = sma_source == "SMA" ? ta.sma(src, fast_length) : ta.ema(src, fast_length)
+slow_ma = sma_source == "SMA" ? ta.sma(src, slow_length) : ta.ema(src, slow_length)
+macd = fast_ma - slow_ma
+signal = sma_signal == "SMA" ? ta.sma(macd, signal_length) : ta.ema(macd, signal_length)
+hist = macd - signal
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
+// ■■■■■■ ■■■■■■■ M A C D  ■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
+
+
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 指標訂立 signal
+
+//快線斜正  fast_grow       ◆◆◆◆◆◆◆◆
+fast_grow = macd > macd[1] and macd[1] < macd[2]
+//快線翻零  bl_up_0         ◆◆◆◆◆◆◆◆
+bl_up_0 = ta.crossover(macd,0)
+
+//綠深轉淺  green_turn_down ◆◆◆◆◆◆◆◆
+green_turn_down = hist >= 0  and hist[1] >= hist and hist[2] < hist[1]
+//快線落慢  fast_down_low   ◆◆◆◆◆◆◆◆
+fast_down_low = ta.crossunder(macd , signal)  
+
+// // //快線翻慢  fast_up_low     ◆◆◆◆◆◆◆◆
+// // fast_up_low = ta.crossover(macd , signal)  
+
+
+
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 輸入選項 input
+
+//entry_sig_on = input.bool(title = "進場訊號開",  defval = false )
+//close_sig_on = input.bool(title = "離場訊號開",  defval = false )
+
+entry_sig_option = input.string( title = "進場訊號",  defval = "快線斜正", 
+                                 options = ["快線斜正","快線翻零"], 
+                                 display = display.data_window)       
+
+entry_sig =  entry_sig_option == "快線斜正"?fast_grow :
+             entry_sig_option == "快線翻零"?bl_up_0 : 
+             false
+
+close_sig_option = input.string( title = "出場訊號",  defval = "快線落慢", 
+                                 options = ["快線落慢","綠深轉淺"], 
+                                 display = display.data_window)
+
+close_sig =  close_sig_option == "快線落慢"?fast_down_low :
+             close_sig_option == "綠深轉淺"?green_turn_down :
+             false
+
+//■■■■■■■■■  ▲✔✘ 切換用的變數要時常確認是否切換正確(會影響切換順暢)
+
+
+
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 塗色閘門
+var bgcolor_bool = false
+
+if bgcolor_bool == false
+    if entry_sig 
+        bgcolor_bool := true
+else
+    if close_sig
+        bgcolor_bool := false
+
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 圖色
+
+bgcolor(color = bgcolor_bool? color.rgb(237, 141, 31, 60) : na)
+
