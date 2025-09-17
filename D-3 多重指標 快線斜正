@@ -61,13 +61,10 @@ hist_turn_light_red = hist < 0 and hist > hist[1] and hist[1] <= hist[2]
 hist_turn_deep_red = hist < 0 and hist < hist[1] and hist[1] >= hist[2]
 
 //慢線(signal)斜率為正  signal_slope_positive  ◆◆◆◆◆◆◆◆
-signal_slope_positive = signal > signal[1]
+signal_slope_positive = signal > signal[1] and signal[1] < signal[2]
 
 //慢線(signal)斜率為負  signal_slope_negative  ◆◆◆◆◆◆◆◆
-signal_slope_negative = signal < signal[1]
-
-
-
+signal_slope_negative = signal < signal[1] and signal[1] > signal[2]
 
 
 
@@ -83,7 +80,6 @@ if fast_down_low
 //綠深轉淺  green_turn_down ◆◆◆◆◆◆◆◆
 if green_turn_down
     label.new(bar_index, high + 0.5, text="", color = color.green, size = size.tiny, style =label.style_diamond )
-
 //快線翻零  bl_up_0         ◆◆◆◆◆◆◆◆
 if bl_up_0
     label.new(bar_index, high + 0.5, text="", color = color.red, size = size.tiny, style =label.style_flag )
@@ -96,12 +92,29 @@ var fast_grow_bool_value = float(na)
 if macd > macd[1] and macd[1] < macd[2]
     fast_grow_bool := true
     fast_grow_bool_value:=close
-
 else if macd < macd[1] and macd[1] > macd[2]
     fast_grow_bool := false
     fast_grow_bool_value:= float(na)
 
-plot(fast_grow_bool_value, "快線斜正起始價格", color.red, 6, plot.style_steplinebr ) 
+plot(fast_grow_bool_value, "快線斜正起始價格", color.blue, 6, plot.style_steplinebr ) 
+
+
+var sl_grow_bool_value = float(na)
+if signal_slope_positive    
+    sl_grow_bool_value:=close
+else if signal_slope_negative
+    sl_grow_bool_value:= float(na)
+
+plot(sl_grow_bool_value, "慢線斜正起始價格", color.orange, 6, plot.style_steplinebr ) 
+
+
+
+
+
+
+
+
+
 
 
 // ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 輸入項 的 group
