@@ -1,0 +1,165 @@
+
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 指標訂立 signal
+//"快線斜正", fast_grow
+fast_grow = macd > macd[1] and macd[1] < macd[2]
+
+//"快線翻零", bl_up_0
+bl_up_0 = ta.crossover(macd,0)
+
+//"綠深轉淺", green_turn_down
+green_turn_down = hist >= 0  and hist[1] >= hist and hist[2] < hist[1]
+
+//"快線落慢", fast_down_low
+fast_down_low = ta.crossunder(macd , signal)  
+
+//"快線翻慢", fast_up_low
+fast_up_low = ta.crossover(macd , signal) 
+
+//"快線斜負", macd_slope_negative
+macd_slope_negative = macd < macd[1] and macd[1] >= macd[2]
+
+//"由綠轉紅", hist_green_to_red
+hist_green_to_red = hist[1] >= 0 and hist < 0
+
+//"由紅轉綠", hist_red_to_green
+hist_red_to_green = hist[1] < 0 and hist >= 0
+
+//"轉為淺紅", hist_turn_light_red
+hist_turn_light_red = hist < 0 and hist > hist[1] and hist[1] <= hist[2]
+
+//"轉為深紅", hist_turn_deep_red
+hist_turn_deep_red = hist < 0 and hist < hist[1] and hist[1] >= hist[2]
+
+//"慢線斜正", signal_slope_positive
+signal_slope_positive = signal > signal[1] and signal[1] < signal[2]
+
+//"慢線斜負" signal_slope_negative
+signal_slope_negative = signal < signal[1] and signal[1] > signal[2]
+
+
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 條件判斷函數 ■■■■■■
+
+get_condition(condition_name) =>
+    switch condition_name
+        "快線斜正" =>  fast_grow
+        "快線翻零" =>  bl_up_0
+        "綠深轉淺" =>  green_turn_down
+        "快線落慢" =>  fast_down_low
+        "快線翻慢" =>  fast_up_low
+        "快線斜負" =>  macd_slope_negative
+        "由綠轉紅" =>  hist_green_to_red
+        "由紅轉綠" =>  hist_red_to_green
+        "轉為淺紅" =>  hist_turn_light_red
+        "轉為深紅" =>  hist_turn_deep_red
+        "慢線斜正" =>  signal_slope_positive
+        "慢線斜負" =>  signal_slope_negative
+        => false
+
+
+// ■■■■■■ A指標 紅色鑽石標記 設定 ■■■■■■
+a_condition = input.string(title="紅色鑽石",
+                           defval="無",
+                           options=[ "無",
+                                     "快線斜正",
+									 "快線翻零",
+									 "綠深轉淺",
+									 "快線落慢",
+									 "快線翻慢",
+									 "快線斜負",
+									 "由綠轉紅",
+									 "由紅轉綠",
+									 "轉為淺紅",
+									 "轉為深紅",
+									 "慢線斜正",
+									 "慢線斜負"
+                                     ])
+
+// ■■■■■■ B指標 藍色旗幟標記 設定 ■■■■■■
+b_condition = input.string(title="藍色旗幟",
+                           defval="無",
+                           options=[ "無",
+                                     "快線斜正",
+									 "快線翻零",
+									 "綠深轉淺",
+									 "快線落慢",
+									 "快線翻慢",
+									 "快線斜負",
+									 "由綠轉紅",
+									 "由紅轉綠",
+									 "轉為淺紅",
+									 "轉為深紅",
+									 "慢線斜正",
+									 "慢線斜負"
+                                     ])
+
+// ■■■■■■ C指標 綠色三角標記 設定 ■■■■■■
+c_condition = input.string(title="綠色三角",
+                           defval="無",
+                           options=[ "無",
+                                     "快線斜正",
+									 "快線翻零",
+									 "綠深轉淺",
+									 "快線落慢",
+									 "快線翻慢",
+									 "快線斜負",
+									 "由綠轉紅",
+									 "由紅轉綠",
+									 "轉為淺紅",
+									 "轉為深紅",
+									 "慢線斜正",
+									 "慢線斜負"
+                                     ])                           
+
+
+// ■■■■■■ A指標觸發條件 ■■■■■■
+a_trigger = get_condition(a_condition)
+
+// ■■■■■■ B指標觸發條件 ■■■■■■
+b_trigger = get_condition(b_condition)
+
+// ■■■■■■ C指標觸發條件 ■■■■■■
+c_trigger = get_condition(c_condition)
+
+// ■■■■■■ 標記顯示 ■■■■■■
+// A指標 紅色鑽石標記
+plotshape(a_trigger, 
+     style=shape.diamond, 
+     location=location.abovebar, 
+     color=color.red, 
+     size=size.normal,
+     title="A指標 紅色鑽石")
+
+// B指標 藍色旗幟標記
+plotshape(b_trigger, 
+     style=shape.flag, 
+     location=location.abovebar, 
+     color=color.blue, 
+     size=size.normal,
+     title="B指標 藍色旗幟")
+
+// C指標 綠色三角標記
+plotshape(c_trigger, 
+     style=shape.triangleup, 
+     location=location.abovebar, 
+     color=color.green, 
+     size=size.normal,
+     title="C指標 綠色三角")
+	 
+	 
+	 
+	 
+
+var table info_table = table.new(position.top_right, 2, 4, bgcolor=color.white, border_width=1)
+
+if barstate.islast
+    table.cell(info_table, 0, 0, "指標", text_color=color.black, bgcolor=color.gray)
+    table.cell(info_table, 1, 0, "條件", text_color=color.black, bgcolor=color.gray)
+    
+    table.cell(info_table, 0, 1, "A指標 🔴", text_color=color.red, bgcolor=color.white)
+    table.cell(info_table, 1, 1, a_condition, text_color=color.black, bgcolor=color.white)
+    
+    table.cell(info_table, 0, 2, "B指標 🔵", text_color=color.blue, bgcolor=color.white)
+    table.cell(info_table, 1, 2, b_condition, text_color=color.black, bgcolor=color.white)
+    
+    table.cell(info_table, 0, 3, "C指標 🟢", text_color=color.green, bgcolor=color.white)
+    table.cell(info_table, 1, 3, c_condition, text_color=color.black, bgcolor=color.white)
