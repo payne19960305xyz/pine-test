@@ -1,0 +1,72 @@
+//@version=6
+indicator("學習用59", overlay=true, format = format.price, max_labels_count = 500)
+
+// ■■■■■■ ■■■■■■■ M A C D  ■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■
+fast_length =input(title = "Fast Length", defval = 12) //12    4
+slow_length =input(title = "Slow Length", defval = 26) //26    21
+src =close //input(title = "Source", defval = close)   
+signal_length =input.int(title = "Signal Smoothing",  minval = 1, maxval = 50, defval = 9, display = display.data_window) //  9
+sma_source ="EMA" //input.string(title = "Oscillator MA Type",  defval = "EMA", options = ["SMA", "EMA"], display = display.data_window)
+sma_signal ="EMA" // input.string(title = "Signal Line MA Type", defval = "EMA", options = ["SMA", "EMA"], display = display.data_window)
+// Calculating
+fast_ma = sma_source == "SMA" ? ta.sma(src, fast_length) : ta.ema(src, fast_length)
+slow_ma = sma_source == "SMA" ? ta.sma(src, slow_length) : ta.ema(src, slow_length)
+macd = fast_ma - slow_ma
+signal = sma_signal == "SMA" ? ta.sma(macd, signal_length) : ta.ema(macd, signal_length)
+hist = macd - signal
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
+// ■■■■■■ ■■■■■■■ M A C D  ■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
+
+
+
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 持續性信號 (快線斜正)
+[di_P, di_d, adx] = ta.dmi(14,10)
+
+get_DMI_color(DMI) =>
+    switch true
+        DMI <20 =>color.blue
+        DMI <30 =>color.yellow
+        DMI <40 =>color.orange 
+        DMI <50 =>color.red 
+        =>color.purple
+
+adx_color = get_DMI_color(adx)
+di_P_color = get_DMI_color(di_P)
+di_d_color = get_DMI_color(di_d)
+
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 持續性信號 (快線斜正)
+var fast_grow_bool = false              // 開始斜率為正
+var fast_grow_bool_value = float(na)    // 開始時的值
+
+if macd > macd[1] and macd[1] < macd[2] // 快線比前一根大(斜率為正) 且前跟比前前根小(首次斜率為正)
+    fast_grow_bool := true              
+    fast_grow_bool_value:=close         
+else if macd < macd[1] and macd[1] > macd[2] // 斜率 開始非正
+    fast_grow_bool := false                  // 關閉斜率為正的持續信號
+    fast_grow_bool_value:= float(na)         // 關閉斜率為正的值
+
+
+plot(fast_grow_bool_value, "快線斜正起始價格", adx_color, 4, plot.style_steplinebr ) 
+
+plotshape(fast_grow_bool, 
+     style=shape.triangleup, 
+     location=location.abovebar, 
+     color=di_P_color, 
+     size=size.tiny)
+
+plotshape(fast_grow_bool, 
+     style=shape.triangledown, 
+     location=location.belowbar, 
+     color=di_d_color, 
+     size=size.tiny)
+
+
+[bb_middle, bb_upper, bb_lower] = ta.bb(close, 20, 2)
+plot(bb_upper, "布林上軌", color=color.gray, linewidth=1)
+plot(bb_lower, "布林下軌", color=color.gray, linewidth=1)
+plot(bb_middle, "布林中軌", color=color.olive, linewidth=1)
+
+
+// ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■
+
