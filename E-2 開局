@@ -1,0 +1,8 @@
+//@version=6
+indicator("學習用59_修正版", overlay=true, format = format.price)
+plot(close, color = color.rgb(123,123,123,100))
+
+//strategy("學習用59_修正版", overlay=true, format = format.price)
+// if high < low 
+//     strategy.entry(".", strategy.short )
+
