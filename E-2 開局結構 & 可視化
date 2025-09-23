@@ -1,0 +1,15 @@
+//@version=6
+indicator("學習用59_修正版", overlay=true, format = format.price)
+plot(close, color = color.rgb(123,123,123,100))
+
+//strategy("學習用59_修正版", overlay=true, format = format.price)
+// if high < low 
+//     strategy.entry(".", strategy.short )
+
+
+// ■■■■■■ 可視化 ■■■■■■ 
+if showcross and not bullish and bullish[1]    
+    line.new(bar_index, close, bar_index + 20, close, color= color.red, width=8)
+
+if showcross and bullish and not bullish[1]    
+    line.new(bar_index, close, bar_index + 20, close, color= color.lime, width=8)
