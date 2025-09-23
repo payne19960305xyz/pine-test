@@ -1,0 +1,118 @@
+// ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ 根據不同策略變換
+// ■■■■■■ 參數設定 ■■■■■■
+ema_short_length = input.int(20, title="短均線長度", minval=1)
+ema_long_length = input.int(40, title="長均線長度", minval=1)
+lookback_period = input.int(3, title="止損點回看期間(K線數)", minval=1)
+lowest_N = ta.lowest(low, lookback_period)[1]
+
+// ■■■■■■ EMA 計算 ■■■■■■
+ema_short = ta.ema(close, ema_short_length)
+ema_long = ta.ema(close, ema_long_length)
+
+// 繪製EMA線
+plot(ema_short, color=color.blue, linewidth=2, title="EMA20")
+plot(ema_long, color=color.red, linewidth=2, title="EMA40")
+
+// ■■■■■■ 進場信號：短均線突破長均線 ■■■■■■
+entry_signal = ta.crossover(ema_short, ema_long)
+
+// ■■■■■■ 變數宣告 ■■■■■■
+var float entry_price = na
+var float initial_stop_loss = na
+var float current_stop_loss = na
+var float trigger_price = na
+var bool in_position = false
+// ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ 根據不同策略變換
+
+
+// ■■■■■■ 進場邏輯 ■■■■■■
+if entry_signal and not in_position
+    // 記錄進場價格
+    entry_price := close
+    
+    // 計算初始止損點：前三根K線的最低點
+    initial_stop_loss := lowest_N
+    current_stop_loss := initial_stop_loss
+    
+    // 計算觸發價格：進場點 + (進場點 - 止損點)
+    trigger_price := entry_price + (entry_price - initial_stop_loss)
+    
+    // 標記進入持仓狀態
+    in_position := true
+    
+    // 執行買入
+    strategy.entry("Long", strategy.long)
+
+// ■■■■■■ 移動止損邏輯 ■■■■■■
+if in_position
+    // 當價格達到或超過觸發價時
+    if high >= trigger_price
+        // 計算價格突破觸發價多少
+        breakthrough_amount = high - trigger_price
+        
+        // 如果止損點還是初始止損點，先移動到進場點
+        if current_stop_loss == initial_stop_loss
+            current_stop_loss := entry_price
+            trigger_price := trigger_price + breakthrough_amount
+        else
+            // 止損點跟隨價格上漲
+            current_stop_loss := current_stop_loss + breakthrough_amount
+            trigger_price := trigger_price + breakthrough_amount
+
+// ■■■■■■ 出場邏輯 ■■■■■■
+if in_position and low <= current_stop_loss
+    strategy.close("Long", comment="止損出場")
+    in_position := false
+    entry_price := na
+    initial_stop_loss := na
+    current_stop_loss := na
+    trigger_price := na
+
+// ■■■■■■ 繪製線條 ■■■■■■
+// 進場價格線
+plot(in_position ? entry_price : na, color=color.green, linewidth=1, style=plot.style_linebr, title="進場價")
+
+// 止損價線
+plot(in_position ? current_stop_loss : na, color=color.red, linewidth=2, style=plot.style_linebr, title="止損價")
+
+// 觸發價線  
+plot(in_position ? trigger_price : na, color=color.orange, linewidth=1, style=plot.style_linebr, title="觸發價")
+
+// ■■■■■■ 標記顯示 ■■■■■■
+// 進場信號標記
+plotshape(entry_signal, style=shape.triangleup, location=location.belowbar, 
+          color=color.green, size=size.normal, title="進場信號")
+
+// 當前持倉狀態顯示
+bgcolor(in_position ? color.new(color.green, 95) : na, title="持倉狀態")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
