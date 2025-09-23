@@ -1,0 +1,141 @@
+get_DMI_color(DMI) =>
+    switch true
+        DMI <20 =>color.blue
+        DMI <30 =>color.yellow
+        DMI <40 =>color.orange 
+        DMI <50 =>color.red 
+        =>color.purple
+		
+		
+		
+get_condition(condition_name) =>
+    switch condition_name
+        "快線斜正" =>  fast_grow
+        "快線翻零" =>  bl_up_0
+        "綠深轉淺" =>  green_turn_down
+        "快線落慢" =>  fast_down_low
+        "快線翻慢" =>  fast_up_low
+        "快線斜負" =>  macd_slope_negative
+        "由綠轉紅" =>  hist_green_to_red
+        "由紅轉綠" =>  hist_red_to_green
+        "轉為淺紅" =>  hist_turn_light_red
+        "轉為深紅" =>  hist_turn_deep_red
+        "慢線斜正" =>  signal_slope_positive
+        "慢線斜負" =>  signal_slope_negative
+        => false
+
+plotshape(entry_signal, style=shape.triangleup, location=location.belowbar, 
+          color=color.green, size=size.normal, title="進場信號")
+		  
+		  
+		  
+plotshape(fast_grow_bool, 
+     style=shape.triangleup, 
+     location=location.abovebar, 
+     color=di_P_color, 
+     size=size.tiny)		  
+		  
+		  
+		  
+c_condition = input.string(title="綠色三角",
+                           defval="無",
+                           options=[ "無",
+                                     "快線斜正",
+									 "快線翻零",
+									 "綠深轉淺",
+									 "快線落慢",
+									 "快線翻慢",
+									 "快線斜負",
+									 "由綠轉紅",
+									 "由紅轉綠",
+									 "轉為淺紅",
+									 "轉為深紅",
+									 "慢線斜正",
+									 "慢線斜負"
+                                     ])   		  
+									 
+									 
+									 
+group_c = "C指標 綠色三角標記"
+c_enable = input.bool(title="啟用C指標", defval=false, group=group_c)
+c_condition = input.string(title="選擇條件", 
+     defval="連續三根上漲", 
+     options=["快線上穿慢線", "快線下穿慢線", "連續三根上漲"], 
+     group=group_c)									 
+	 
+	 
+
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 持續性信號 (快線斜正)	 
+var fast_grow_bool = false
+var fast_grow_bool_value = float(na)
+if macd > macd[1] and macd[1] < macd[2]
+    fast_grow_bool := true
+    fast_grow_bool_value:=close
+else if macd < macd[1] and macd[1] > macd[2]
+    fast_grow_bool := false
+    fast_grow_bool_value:= float(na)
+	
+plot(fast_grow_bool_value, "快線斜正起始價格", color.blue, 6, plot.style_steplinebr ) 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 塗色閘門 ■■■■■■
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 塗色閘門 ■■■■■■
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 塗色閘門 ■■■■■■
+
+
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 輸入選項 input
+
+//entry_sig_on = input.bool(title = "進場訊號開",  defval = false )
+//close_sig_on = input.bool(title = "離場訊號開",  defval = false )
+
+entry_sig_option = input.string( title = "進場訊號",  defval = "快線斜正", 
+                                 options = ["快線斜正","快線翻零"], 
+                                 display = display.data_window)       
+
+entry_sig =  entry_sig_option == "快線斜正"?fast_grow :
+             entry_sig_option == "快線翻零"?bl_up_0 : 
+             false
+
+close_sig_option = input.string( title = "出場訊號",  defval = "快線落慢", 
+                                 options = ["快線落慢","綠深轉淺"], 
+                                 display = display.data_window)
+
+close_sig =  close_sig_option == "快線落慢"?fast_down_low :
+             close_sig_option == "綠深轉淺"?green_turn_down :
+             false
+
+//■■■■■■■■■  ▲✔✘ 切換用的變數要時常確認是否切換正確(會影響切換順暢)
+
+
+
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 塗色閘門
+var bgcolor_bool = false
+
+if bgcolor_bool == false
+    if entry_sig 
+        bgcolor_bool := true
+else
+    if close_sig
+        bgcolor_bool := false
+
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 圖色
+
+bgcolor(color = bgcolor_bool? color.rgb(237, 141, 31, 60) : na)
+
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 塗色閘門 ■■■■■■
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 塗色閘門 ■■■■■■
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 塗色閘門 ■■■■■■
+
+
