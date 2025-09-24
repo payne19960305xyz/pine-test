@@ -1,0 +1,89 @@
+//@version=6
+indicator(title="Ninja Indiacator by Stock Shikshak", shorttitle="56", overlay=false)
+
+anchor      = input.int(0,minval=0,maxval=1440,title="Use Alternate Anchor TimeFrame (0=none, max=1440 (mins,D,W)")
+nissType    = input.string("Ninja", title="Calculate Oscillator From Which NISS Sets", options=["Ninja","SuperNinja"])
+smoothLen   = input.int(1,  minval=1, title="Oscillator Smoothing Length (1=none)")
+signalLen   = input.int(24, minval=1, title="NISS Oscillator Signal Length")
+showZones   = input.bool(true, title="Show Bullish/Bearish Zones")
+src         = input.source(close, title="Source")
+
+NISSFast(src, mult) =>
+    ema1 = ta.ema(src, 3*mult)
+    ema2 = ta.ema(src, 5*mult)
+    ema3 = ta.ema(src, 8*mult)
+    ema4 = ta.ema(src, 10*mult)
+    ema5 = ta.ema(src, 12*mult)
+    ema6 = ta.ema(src, 15*mult)
+    (ema1 + ema2 + ema3 + ema4 + ema5 + ema6)
+
+NISSSlow(src, mult) =>
+    ema7 = ta.ema(src, 30*mult)
+    ema8 = ta.ema(src, 35*mult)
+    ema9 = ta.ema(src, 40*mult)
+    ema10 = ta.ema(src, 45*mult)
+    ema11 = ta.ema(src, 50*mult)
+    ema12 = ta.ema(src, 60*mult)
+    (ema7 + ema8 + ema9 + ema10 + ema11 + ema12)
+
+superNISSFast(src, mult) =>
+    emaF1 = ta.ema(src, 3*mult)
+    emaF2 = ta.ema(src, 5*mult)
+    emaF3 = ta.ema(src, 7*mult)
+    emaF4 = ta.ema(src, 9*mult)
+    emaF5 = ta.ema(src, 11*mult)
+    emaF6 = ta.ema(src, 13*mult)
+    emaF7 = ta.ema(src, 15*mult)
+    emaF8 = ta.ema(src, 17*mult)
+    emaF9 = ta.ema(src, 19*mult)
+    emaF10 = ta.ema(src, 21*mult)
+    emaF11 = ta.ema(src, 23*mult)
+    (emaF1 + emaF2 + emaF3 + emaF4 + emaF5 + emaF6 + emaF7 + emaF8 + emaF9 + emaF10 + emaF11)/11
+
+superNISSSlow(src, mult) =>
+    emaS1 = ta.ema(src, 25*mult)
+    emaS2 = ta.ema(src, 28*mult)
+    emaS3 = ta.ema(src, 31*mult)
+    emaS4 = ta.ema(src, 34*mult)
+    emaS5 = ta.ema(src, 37*mult)
+    emaS6 = ta.ema(src, 40*mult)
+    emaS7 = ta.ema(src, 43*mult)
+    emaS8 = ta.ema(src, 46*mult)
+    emaS9 = ta.ema(src, 49*mult)
+    emaS10 = ta.ema(src, 52*mult)
+    emaS11 = ta.ema(src, 55*mult)
+    emaS12 = ta.ema(src, 58*mult)
+    emaS13 = ta.ema(src, 61*mult)
+    emaS14 = ta.ema(src, 64*mult)
+    emaS15 = ta.ema(src, 67*mult)
+    emaS16 = ta.ema(src, 70*mult)
+    (emaS1 + emaS2 + emaS3 + emaS4 + emaS5 + emaS6 + emaS7 + emaS8 +
+     emaS9 + emaS10 + emaS11 + emaS12 + emaS13 + emaS14 + emaS15 + emaS16)/16
+
+mult = not timeframe.isintraday or anchor==0 or timeframe.in_seconds()<=0 or timeframe.in_seconds()>=anchor*60 or anchor>1440 ? 1 : math.round(anchor*60/timeframe.in_seconds())>1? math.round(anchor*60/timeframe.in_seconds()) : 1
+mult := timeframe.isintraday or anchor==0 or timeframe.in_seconds()<=0 or timeframe.in_seconds()>=anchor*60 or anchor>52 ? mult : math.round(anchor*60/timeframe.in_seconds())>1? math.round(anchor*60/timeframe.in_seconds()) : 1
+
+nissFast = nissType=="Ninja" ? NISSFast(src, mult) : superNISSFast(src, mult)
+nissSlow = nissType=="Ninja" ? NISSSlow(src, mult) : superNISSSlow(src, mult)
+nissOscRaw = ((nissFast - nissSlow) / nissSlow) * 100
+nissOsc    = ta.sma(nissOscRaw, smoothLen)
+nissSignal = ta.ema(nissOscRaw, signalLen)
+nissClr  = nissOsc < nissSignal ? color.fuchsia : nissOsc > nissSignal ? color.blue : color.gray
+bullishRule = ta.crossover(nissOsc, nissSignal)
+bearishRule = ta.crossunder(nissOsc, nissSignal)
+var ruleState = 0
+ruleState := bullishRule ? 1 : bearishRule ? -1 : ruleState
+
+plot(nissOsc, title="NISS OSC Smooth", linewidth=2, color=color.new(nissClr, 10))
+plot(nissSignal, title="NISS Signal", linewidth=1, color=color.new(color.white, 10))
+HL1= hline(0.20,title="Upper limit", linestyle=hline.style_solid, linewidth=1, color=color.black)
+HL2= hline(-0.20,title="Lower limit", linestyle=hline.style_solid, linewidth=1, color=color.black)
+fill(HL1, HL2, color.new(color.white, 90))
+
+
+var color_bool = false
+if  nissOsc < nissSignal 
+    color_bool:=true
+if  nissOsc > nissSignal 
+    color_bool:=false
+bgcolor(color_bool? color.green:na)
