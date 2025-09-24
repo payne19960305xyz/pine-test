@@ -13,8 +13,8 @@ crossup = b[1] < close[1] and b > close
 crossdn = a[1] < close[1] and a > close
 bullish = barssince(crossdn) <= barssince(crossup)
 c = bullish ? color.lime : color.red
-plot(a,"Upper",color=color.blue,linewidth=2,transp=0)
-plot(b,"Lower",color=color.blue,linewidth=2,transp=0)
+plot(a,"Upper",color=color.blue,linewidth=2,transp=100)
+plot(b,"Lower",color=color.blue,linewidth=2,transp=100)
 p1=plot(avg,"Average",color=c,linewidth=1,transp=90)
 p2=plot(close,"Close price",color=c,linewidth=1,transp=100)
 fill(p1,p2,color=c,transp=90)
@@ -23,8 +23,27 @@ showcross = input(true)
 plotshape(showcross and not bullish and bullish[1] ? avg : na, location=location.absolute, style=shape.labeldown, color=color.red, size=size.tiny, text="Sell", textcolor=#ffffff, transp=0, offset=-1)
 plotshape(showcross and bullish and not bullish[1] ? avg : na, location=location.absolute, style=shape.labelup, color=color.lime, size=size.tiny, text="Buy", textcolor=#ffffff, transp=0, offset=-1)
 
-if showcross and not bullish and bullish[1]    
-    line.new(bar_index, close, bar_index + 20, close, color= color.red, width=8)
 
-if showcross and bullish and not bullish[1]    
-    line.new(bar_index, close, bar_index + 20, close, color= color.lime, width=8)
+// ■■■■■■■■■■■■■■■■■■■■■■■■ 顏色
+var LS_coloer = color(na)
+// ■■■■■■■■■■■■■■■■■■■■■■■■ close
+var LS_value = float(na)
+// ■■■■■■■■■■■■■■■■■■■■■■■■ 顯示長度
+var LS_length = 0
+// ■■■■■■■■■■■■■■■■■■■■■■■■ Long 開關
+if showcross and not bullish and bullish[1]      //看跌信號
+    LS_length := 15
+    LS_coloer := color.rgb(255, 173, 173)
+    LS_value := close
+// ■■■■■■■■■■■■■■■■■■■■■■■■ Short 開關
+if showcross and bullish and not bullish[1]      //看漲信號
+    LS_length := 15
+    LS_coloer := color.rgb(159, 255, 163)
+    LS_value := close
+// ■■■■■■■■■■■■■■■■■■■■■■■■ 畫線
+plot(LS_value ,"LS",color=LS_coloer ,linewidth=8, style = plot.style_linebr)
+// ■■■■■■■■■■■■■■■■■■■■■■■■ 長度調整
+if  LS_length >0 
+    LS_length:=LS_length-1
+else
+    LS_value := float(na)
