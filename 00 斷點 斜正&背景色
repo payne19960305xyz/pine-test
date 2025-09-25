@@ -1,0 +1,62 @@
+//@version=6
+indicator("學習用59", overlay=true, format = format.price, max_labels_count = 500)
+plot(close, color = color.rgb(123,123,123,100))
+
+//strategy("學習用59_修正版", overlay=true, format = format.price)
+// if high < low 
+//     strategy.entry(".", strategy.short )
+
+
+
+// ■■■■■■ ■■■■■■■ M A C D  ■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■
+fast_length =12 //input(title = "Fast Length", defval = 12)
+slow_length =26 //input(title = "Slow Length", defval = 26)
+src =close //input(title = "Source", defval = close)
+signal_length =9 //input.int(title = "Signal Smoothing",  minval = 1, maxval = 50, defval = 9, display = display.data_window)
+sma_source ="EMA" //input.string(title = "Oscillator MA Type",  defval = "EMA", options = ["SMA", "EMA"], display = display.data_window)
+sma_signal ="EMA" // input.string(title = "Signal Line MA Type", defval = "EMA", options = ["SMA", "EMA"], display = display.data_window)
+// Calculating
+fast_ma = sma_source == "SMA" ? ta.sma(src, fast_length) : ta.ema(src, fast_length)
+slow_ma = sma_source == "SMA" ? ta.sma(src, slow_length) : ta.ema(src, slow_length)
+macd = fast_ma - slow_ma
+signal = sma_signal == "SMA" ? ta.sma(macd, signal_length) : ta.ema(macd, signal_length)
+hist = macd - signal
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
+// ■■■■■■ ■■■■■■■ M A C D  ■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
+
+
+
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 指標訂立
+//快線斜正  fast_grow       ◆◆◆◆◆◆◆◆
+fast_grow = macd > macd[1] and macd[1] < macd[2]
+//快線落慢  fast_down_low   ◆◆◆◆◆◆◆◆
+fast_down_low = ta.crossunder(macd , signal)  
+//快線翻慢  fast_up_low     ◆◆◆◆◆◆◆◆
+fast_up_low = ta.crossover(macd , signal)  
+//綠深轉淺  green_turn_down ◆◆◆◆◆◆◆◆
+green_turn_down = hist >= 0  and hist[1] >= hist and hist[2] < hist[1]
+//快線翻零  bl_up_0         ◆◆◆◆◆◆◆◆
+bl_up_0 = ta.crossover(macd,0)
+//■■■■■■■■■   ⍢⎵⍢ 指標是持續出現還是單次出現
+color_sig_1 = macd > 0
+
+
+
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 持續性信號 (快線斜正)
+var fast_grow_bool = false              // 開始斜率為正
+var fast_grow_bool_value = float(na)    // 開始時的值
+
+if macd > macd[1] and macd[1] < macd[2] // 快線比前一根大(斜率為正) 且前跟比前前根小(首次斜率為正)
+    fast_grow_bool := true              
+    fast_grow_bool_value:=close         
+else if macd < macd[1] and macd[1] > macd[2] // 斜率 開始非正
+    fast_grow_bool := false                  // 關閉斜率為正的持續信號
+    fast_grow_bool_value:= float(na)         // 關閉斜率為正的值
+
+
+plot(fast_grow_bool_value, "快線斜正起始價格",  linewidth = 4, style =  plot.style_steplinebr ) 
+
+
+
+bgcolor(color_sig_1 ? color.new(color.green, 80) :na)
