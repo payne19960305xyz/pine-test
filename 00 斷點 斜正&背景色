@@ -29,9 +29,6 @@ plot(close, color = color.rgb(123,123,123,100))
 
 
 
-
-
-
 // ■■■■■■ ■■■■■■■ M A C D  ■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
 // ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■
 fast_length =12 //input(title = "Fast Length", defval = 12)
@@ -82,17 +79,100 @@ else if macd < macd[1] and macd[1] > macd[2] // 斜率 開始非正
 plot(fast_grow_bool_value, "快線斜正起始價格",  linewidth = 4, style =  plot.style_steplinebr ) 
 
 
-MACD_plus = input.bool(true, "是否顯示快線正數")
+// 快線>0 背景色
+MACD_plus = input.bool(true, "是否顯示快線>0")
 bgcolor(MACD_plus and color_sig_1 ? color.new(color.green, 80) :na)
 
 
 h = str.tostring(hour(time), "00")
 m = str.tostring(minute(time), "00")
 time_00 = h=="00" and m == "00" ? 0 : h =="12"and m == "00" ? 12 : 99
-plot(time_00==0 or time_00==12 ? close + 0.5 :float(na), 
+plot(time_00==0 or time_00==12 ? close + 0.2 :float(na), 
      color = time_00==0 ? color.blue : time_00==12 ? color.orange:color(na),title = "快線斜正起始價格",  
      linewidth = 4, style =  plot.style_steplinebr ) 
-plot(time_00==0 or time_00==12 ? close + 0.6 :float(na), 
+plot(time_00==0 or time_00==12 ? close + 0.3 :float(na), 
      color = time_00==0 ? color.blue : time_00==12 ? color.orange:color(na),title = "快線斜正起始價格",  
      linewidth = 4, style =  plot.style_steplinebr ) 
 
+//■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■
+//■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■
+//■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■
+//■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■
+//■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■
+//■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■
+//■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■
+// 進出場設定
+
+
+// ■■■■■■ 進場信號：短均線突破長均線 ■■■■■■
+entry_signal = macd > macd[1] and macd[1] < macd[2]
+
+// ■■■■■■ 變數宣告 ■■■■■■
+var float entry_price = na
+var float initial_stop_loss = na
+var float current_stop_loss = na
+var float trigger_price = na
+var bool in_position = false
+// ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ 根據不同策略變換
+
+
+// ■■■■■■ 進場邏輯 ■■■■■■
+if entry_signal and not in_position
+    // 記錄進場價格
+    entry_price := close
+    
+    // 計算初始止損點：前三根K線的最低點
+    initial_stop_loss := lowest_N
+    current_stop_loss := initial_stop_loss
+    
+    // 計算觸發價格：進場點 + (進場點 - 止損點)
+    trigger_price := entry_price + (entry_price - initial_stop_loss)
+    
+    // 標記進入持仓狀態
+    in_position := true
+    
+    // 執行買入
+    strategy.entry("Long", strategy.long)
+
+// ■■■■■■ 移動止損邏輯 ■■■■■■
+if in_position
+    // 當價格達到或超過觸發價時
+    if high >= trigger_price
+        // 計算價格突破觸發價多少
+        breakthrough_amount = high - trigger_price
+        
+        // 如果止損點還是初始止損點，先移動到進場點
+        if current_stop_loss == initial_stop_loss
+            current_stop_loss := entry_price
+            trigger_price := trigger_price + breakthrough_amount
+        else
+            // 止損點跟隨價格上漲
+            current_stop_loss := current_stop_loss + breakthrough_amount
+            trigger_price := trigger_price + breakthrough_amount
+
+// ■■■■■■ 出場邏輯 ■■■■■■
+if in_position and low <= current_stop_loss
+    strategy.close("Long", comment="止損出場")
+    in_position := false
+    entry_price := na
+    initial_stop_loss := na
+    current_stop_loss := na
+    trigger_price := na
+
+// ■■■■■■ 繪製線條 ■■■■■■
+// 進場價格線
+plot(in_position ? entry_price : na, color=color.green, linewidth=1, style=plot.style_linebr, title="進場價")
+
+// 止損價線
+plot(in_position ? current_stop_loss : na, color=color.red, linewidth=2, style=plot.style_linebr, title="止損價")
+
+// 觸發價線  
+plot(in_position ? trigger_price : na, color=color.orange, linewidth=1, style=plot.style_linebr, title="觸發價")
+
+// ■■■■■■ 標記顯示 ■■■■■■
+// 進場信號標記
+plotshape(entry_signal, style=shape.triangleup, location=location.belowbar, 
+          color=color.green, size=size.normal, title="進場信號")
+
+// 當前持倉狀態顯示
+bgcolor(in_position ? color.new(color.green, 95) : na, title="持倉狀態")
