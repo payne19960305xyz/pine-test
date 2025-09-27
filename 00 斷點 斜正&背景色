@@ -7,14 +7,6 @@ plot(close, color = color.rgb(123,123,123,100))
 //     strategy.entry(".", strategy.short )
 
 
-// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
-// ■■■■■■ 以前[2] 作為基準          ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
-// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
-
-
-
-
-
 // 計算 & 建立指標 (以 M A C D 為基礎)
 // ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
 // ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
@@ -177,19 +169,22 @@ plot(in_position ? trigger_price : na, color=color.orange, linewidth=1, style=pl
 
 
 
-// 角度計算公式
-getTheta(x, y, z) =>
-    numer = -z - x * y
-    denom = math.sqrt(z * z + x * x) * math.sqrt(1 + y * y)
-    theta = math.acos(numer / denom)
-    theta
+bar_plus = close > open ? true :false // 綠K
+plus_2br = close[1] - open[2]         // 前兩根漲幅 + -
+sig_co = color(na)                    
 
-degree = open[2] - close[1] < 0 ? "++" : close - open < 0 ? "+" : str.tostring(getTheta(7*(open[2]-close[1]), 7*(close-open) , 2) )
+if plus_2br >0 or not bar_plus
+    sig_co := color.green
+else 
+    sig_co := color.red 
+
+aa = plus_2br >0 or not bar_plus? "++" :str.tostring( plus_2br/(close - open) *(-1) )
 
 
 // 進場信號標記
 if entry_signal
-    label.new(bar_index, low - 0.3, degree, color = color.green, size = size.small, style = label.style_label_up)
+    label.new(bar_index, low - 0.3, aa, color = sig_co, size = size.small, style = label.style_label_up)
+
 
 
 
@@ -200,3 +195,5 @@ if entry_signal
 
 // 當前持倉狀態顯示
 bgcolor(in_position ? color.new(color.green, 95) : na, title="持倉狀態")
+
+
