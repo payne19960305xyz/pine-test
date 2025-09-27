@@ -89,7 +89,6 @@ bgcolor(MACD_plus and color_sig_1 ? color.new(color.green, 80) :na)
 
 
 
-
 // 進出場 行為
 //■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■
 //■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■
@@ -111,8 +110,32 @@ var float entry_price = na      // entry_price         進場價格
 var float initial_stop_loss = na// initial_stop_loss   初始指損
 var float current_stop_loss = na// current_stop_loss   移動指損
 var float trigger_price = na    // trigger_price       觸發點位
+var float stop_persont = na     // stop_persont        停損設前一根比例
 in_position =                   // in_position         是否有艙位
      strategy.position_size != 0      
+
+
+
+
+
+// ■■■■■■ 進場信號標記 & 
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
+bar_plus = close > open ? true :false // 綠K
+plus_1br = close[1] - open[1]         // 前兩根漲幅 + -
+sig_co = color(na)                    
+
+if plus_1br >0 or not bar_plus
+    sig_co := color.green
+else 
+    sig_co := color.red 
+aa = plus_1br >0 or not bar_plus? "++" :str.tostring( (close - open)/plus_1br *(-1) )
+
+// 進場信號標記
+if entry_signal
+    label.new(bar_index, low - 0.15, aa, color = sig_co, size = size.small, style = label.style_label_up)
+
+
 
 
 
@@ -132,26 +155,28 @@ if fast_grow_bool_first and not in_position                    //*******fast_gro
         
     // 執行買入 & 並同時建立指損
     strategy.entry("Long", strategy.long)
-    strategy.exit("close_L", "Long", qty_percent = 100, stop = current_stop_loss, limit = trigger_price ,comment = "出場" )
+    strategy.exit("close_L", "Long", qty_percent = 100, stop = current_stop_loss, comment = "出場" ) // limit = trigger_price 
 
 
 // // ■■■■■■ 移動止損邏輯 ■■■■■■
 // // ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
 // // ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
-// if in_position
-//     // 當價格達到或超過觸發價時
-//     if high >= trigger_price
-//         // 計算價格突破觸發價多少
-//         breakthrough_amount = high - trigger_price
+if in_position
+    // 當價格達到或超過觸發價時
+    if high >= trigger_price
+        // 計算價格突破觸發價多少
+        breakthrough_amount = high - trigger_price
                 
-//         if current_stop_loss == initial_stop_loss       // 如果止損點還是初始止損點，先移動到進場點
-//             current_stop_loss := entry_price
-//             trigger_price := high
-//         else                                            // 止損點跟隨價格上漲            
-//             current_stop_loss := current_stop_loss + breakthrough_amount
-//             trigger_price := trigger_price + breakthrough_amount
+        if current_stop_loss == initial_stop_loss       // 如果止損點還是初始止損點，先移動到進場點
+            current_stop_loss := entry_price + breakthrough_amount
+            trigger_price := high
+        else                                            // 止損點跟隨價格上漲            
+            current_stop_loss := current_stop_loss + breakthrough_amount 
+            trigger_price := high
+
+    current_stop_loss := current_stop_loss + 0.00*(trigger_price-current_stop_loss)
         
-//         strategy.exit("close_L", "Long", qty_percent = 100, stop = current_stop_loss, comment = "出場" )
+    strategy.exit("close_L", "Long", qty_percent = 100, stop = current_stop_loss, comment = "出場" )
 
 // ■■■■■■ 繪製線條 ■■■■■■
 // ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
@@ -165,29 +190,6 @@ plot(in_position ? current_stop_loss : na, color=color.red, linewidth=2, style=p
 // 觸發價線  
 plot(in_position ? trigger_price : na, color=color.orange, linewidth=1, style=plot.style_linebr, title="觸發價")
 // ■■■■■■ 標記顯示 ■■■■■■
-
-
-
-
-bar_plus = close > open ? true :false // 綠K
-plus_2br = close[1] - open[2]         // 前兩根漲幅 + -
-sig_co = color(na)                    
-
-if plus_2br >0 or not bar_plus
-    sig_co := color.green
-else 
-    sig_co := color.red 
-
-aa = plus_2br >0 or not bar_plus? "++" :str.tostring( plus_2br/(close - open) *(-1) )
-
-
-// 進場信號標記
-if entry_signal
-    label.new(bar_index, low - 0.3, aa, color = sig_co, size = size.small, style = label.style_label_up)
-
-
-
-
 
 
 
