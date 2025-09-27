@@ -1,5 +1,5 @@
 //@version=6
-indicator("學習用59", overlay=true, format = format.price, max_labels_count = 500)
+strategy("學習用59", overlay=true, format = format.price, max_labels_count = 500)
 plot(close, color = color.rgb(123,123,123,100))
 
 //strategy("學習用59_修正版", overlay=true, format = format.price)
@@ -7,30 +7,12 @@ plot(close, color = color.rgb(123,123,123,100))
 //     strategy.entry(".", strategy.short )
 
 
-
-// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
-// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
-// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
-// ■■■■■■ 屏蔽 快速抽高現象■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
-// ■■■■■■ 參考克勞德                ■■■■■■■■■■■■■■■■■■■■■■■■ 
-// https://claude.ai/chat/af56aac9-c655-46ee-8ca4-94525506206d
-// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
-// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
-// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
-// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
-// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
-// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
-// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
-// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
-// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
-// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
-// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
-// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
-
-
+// 計算 & 建立指標 (以 M A C D 為基礎)
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
 
 // ■■■■■■ ■■■■■■■ M A C D  ■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
-// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■
 fast_length =12 //input(title = "Fast Length", defval = 12)
 slow_length =26 //input(title = "Slow Length", defval = 26)
 src =close //input(title = "Source", defval = close)
@@ -43,12 +25,7 @@ slow_ma = sma_source == "SMA" ? ta.sma(src, slow_length) : ta.ema(src, slow_leng
 macd = fast_ma - slow_ma
 signal = sma_signal == "SMA" ? ta.sma(macd, signal_length) : ta.ema(macd, signal_length)
 hist = macd - signal
-// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
-// ■■■■■■ ■■■■■■■ M A C D  ■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
-
-
-
-// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 指標訂立
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 指標訂立    
 //快線斜正  fast_grow       ◆◆◆◆◆◆◆◆
 fast_grow = macd > macd[1] and macd[1] < macd[2]
 //快線落慢  fast_down_low   ◆◆◆◆◆◆◆◆
@@ -56,16 +33,21 @@ fast_down_low = ta.crossunder(macd , signal)
 //快線翻慢  fast_up_low     ◆◆◆◆◆◆◆◆
 fast_up_low = ta.crossover(macd , signal)  
 //綠深轉淺  green_turn_down ◆◆◆◆◆◆◆◆
-green_turn_down = hist >= 0  and hist[1] >= hist and hist[2] < hist[1]
+green_turn_down = hist >= 0  and hist[1] >= hist and hist[2] < hist[1] 
 //快線翻零  bl_up_0         ◆◆◆◆◆◆◆◆
 bl_up_0 = ta.crossover(macd,0)
-//■■■■■■■■■   ⍢⎵⍢ 指標是持續出現還是單次出現
+// ■■■■■■■■■   ⍢⎵⍢ 指標是持續出現還是單次出現 
 color_sig_1 = macd > 0
 
 
 
-// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 持續性信號 (快線斜正)
-var fast_grow_bool = false              // 開始斜率為正
+
+// 持續性信號 (快線斜正)
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ fast_grow_bool_first  進場信號(只出現一次)
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ fast_grow_bool        開始斜率為正(持續出現)
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ fast_grow_bool_value  開始時的值
+
+var fast_grow_bool = false              // 開始斜率為正(持續出現)
 var fast_grow_bool_value = float(na)    // 開始時的值
 
 if macd > macd[1] and macd[1] < macd[2] // 快線比前一根大(斜率為正) 且前跟比前前根小(首次斜率為正)
@@ -75,49 +57,69 @@ else if macd < macd[1] and macd[1] > macd[2] // 斜率 開始非正
     fast_grow_bool := false                  // 關閉斜率為正的持續信號
     fast_grow_bool_value:= float(na)         // 關閉斜率為正的值
 
+fast_grow_bool_first = fast_grow_bool and not fast_grow_bool[1]
 
 plot(fast_grow_bool_value, "快線斜正起始價格",  linewidth = 4, style =  plot.style_steplinebr ) 
 
+
+
+// 畫出時間標示線 & 快正被景色
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
+h = str.tostring(hour(time), "00")
+m = str.tostring(minute(time), "00")
+CO_hm = h=="00"and m=="00"? color.blue :(h=="06"or h=="18")and m=="00"?color.green :h=="12" and m=="00"? color.orange: time-time[1] > 2*(time[1]-time[2])? color.red: color(na)
+time_00 = h=="00" and m == "00" ? 0 : h =="12"and m == "00" ? 12 : 99
+plot(CO_hm == color(na)? float(na): close + 0.2 , 
+     color = CO_hm, title = "快線斜正起始價格",  
+     linewidth = 4, style =  plot.style_steplinebr ) 
+plot(CO_hm == color(na)? float(na): close + 0.3 , 
+     color = CO_hm, title = "快線斜正起始價格",  
+     linewidth = 4, style =  plot.style_steplinebr ) 
 
 // 快線>0 背景色
 MACD_plus = input.bool(true, "是否顯示快線>0")
 bgcolor(MACD_plus and color_sig_1 ? color.new(color.green, 80) :na)
 
 
-h = str.tostring(hour(time), "00")
-m = str.tostring(minute(time), "00")
-time_00 = h=="00" and m == "00" ? 0 : h =="12"and m == "00" ? 12 : 99
-plot(time_00==0 or time_00==12 ? close + 0.2 :float(na), 
-     color = time_00==0 ? color.blue : time_00==12 ? color.orange:color(na),title = "快線斜正起始價格",  
-     linewidth = 4, style =  plot.style_steplinebr ) 
-plot(time_00==0 or time_00==12 ? close + 0.3 :float(na), 
-     color = time_00==0 ? color.blue : time_00==12 ? color.orange:color(na),title = "快線斜正起始價格",  
-     linewidth = 4, style =  plot.style_steplinebr ) 
-
-//■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■
-//■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■
-//■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■
-//■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■
-//■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■
-//■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■
-//■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■
-// 進出場設定
 
 
-// ■■■■■■ 進場信號：短均線突破長均線 ■■■■■■
-entry_signal = macd > macd[1] and macd[1] < macd[2]
-
-// ■■■■■■ 變數宣告 ■■■■■■
-var float entry_price = na
-var float initial_stop_loss = na
-var float current_stop_loss = na
-var float trigger_price = na
-var bool in_position = false
-// ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ 根據不同策略變換
 
 
-// ■■■■■■ 進場邏輯 ■■■■■■
-if entry_signal and not in_position
+
+
+
+// 進出場 行為
+//■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■
+//■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■
+//■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■
+//■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■
+//■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■
+
+
+// ■■■■■■ 參數設定 ■■■■■■
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
+
+// ■■■■■■ 進場信號：開始斜率為正(單次出現) ■■■■■■
+lookback_period = input.int(5, title="止損點回看期間(K線數)", minval=1)                 
+lowest_N = ta.lowest(low, lookback_period)[1] // lowest_N 指損下探的點位
+entry_signal = fast_grow_bool_first    // fast_grow_bool_first  進場信號(只出現一次)
+// ■■■■■■ 變數宣告 
+var float entry_price = na      // entry_price         進場價格
+var float initial_stop_loss = na// initial_stop_loss   初始指損
+var float current_stop_loss = na// current_stop_loss   移動指損
+var float trigger_price = na    // trigger_price       觸發點位
+in_position =                   // in_position         是否有艙位
+     strategy.position_size != 0      
+
+
+
+// ■■■■■■ 進出場   (邏輯 & 動作)
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
+if fast_grow_bool_first and not in_position                    //*******fast_grow_bool_first  進場信號(只出現一次)
     // 記錄進場價格
     entry_price := close
     
@@ -127,39 +129,33 @@ if entry_signal and not in_position
     
     // 計算觸發價格：進場點 + (進場點 - 止損點)
     trigger_price := entry_price + (entry_price - initial_stop_loss)
-    
-    // 標記進入持仓狀態
-    in_position := true
-    
-    // 執行買入
-    strategy.entry("Long", strategy.long)
-
-// ■■■■■■ 移動止損邏輯 ■■■■■■
-if in_position
-    // 當價格達到或超過觸發價時
-    if high >= trigger_price
-        // 計算價格突破觸發價多少
-        breakthrough_amount = high - trigger_price
         
-        // 如果止損點還是初始止損點，先移動到進場點
-        if current_stop_loss == initial_stop_loss
-            current_stop_loss := entry_price
-            trigger_price := trigger_price + breakthrough_amount
-        else
-            // 止損點跟隨價格上漲
-            current_stop_loss := current_stop_loss + breakthrough_amount
-            trigger_price := trigger_price + breakthrough_amount
+    // 執行買入 & 並同時建立指損
+    strategy.entry("Long", strategy.long)
+    strategy.exit("close_L", "Long", qty_percent = 100, stop = current_stop_loss, limit = trigger_price ,comment = "出場" )
 
-// ■■■■■■ 出場邏輯 ■■■■■■
-if in_position and low <= current_stop_loss
-    strategy.close("Long", comment="止損出場")
-    in_position := false
-    entry_price := na
-    initial_stop_loss := na
-    current_stop_loss := na
-    trigger_price := na
+
+// // ■■■■■■ 移動止損邏輯 ■■■■■■
+// // ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
+// // ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
+// if in_position
+//     // 當價格達到或超過觸發價時
+//     if high >= trigger_price
+//         // 計算價格突破觸發價多少
+//         breakthrough_amount = high - trigger_price
+                
+//         if current_stop_loss == initial_stop_loss       // 如果止損點還是初始止損點，先移動到進場點
+//             current_stop_loss := entry_price
+//             trigger_price := high
+//         else                                            // 止損點跟隨價格上漲            
+//             current_stop_loss := current_stop_loss + breakthrough_amount
+//             trigger_price := trigger_price + breakthrough_amount
+        
+//         strategy.exit("close_L", "Long", qty_percent = 100, stop = current_stop_loss, comment = "出場" )
 
 // ■■■■■■ 繪製線條 ■■■■■■
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
 // 進場價格線
 plot(in_position ? entry_price : na, color=color.green, linewidth=1, style=plot.style_linebr, title="進場價")
 
@@ -168,11 +164,31 @@ plot(in_position ? current_stop_loss : na, color=color.red, linewidth=2, style=p
 
 // 觸發價線  
 plot(in_position ? trigger_price : na, color=color.orange, linewidth=1, style=plot.style_linebr, title="觸發價")
-
 // ■■■■■■ 標記顯示 ■■■■■■
+
+
+
+
+// 角度計算公式
+getTheta(x, y, z) =>
+    numer = -z - x * y
+    denom = math.sqrt(z * z + x * x) * math.sqrt(1 + y * y)
+    theta = math.acos(numer / denom)
+    theta
+
+degree = open[2] - close[1] < 0 ? "++" : close - open < 0 ? "+" : str.tostring(getTheta(7*(open[2]-close[1]), 7*(close-open) , 2) )
+
+
 // 進場信號標記
-plotshape(entry_signal, style=shape.triangleup, location=location.belowbar, 
-          color=color.green, size=size.normal, title="進場信號")
+if entry_signal
+    label.new(bar_index, low - 0.3, degree, color = color.green, size = size.small, style = label.style_label_up)
+
+
+
+
+
+
+
 
 // 當前持倉狀態顯示
 bgcolor(in_position ? color.new(color.green, 95) : na, title="持倉狀態")
