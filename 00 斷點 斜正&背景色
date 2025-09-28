@@ -1,3 +1,4 @@
+
 //@version=6
 strategy("學習用59", overlay=true, format = format.price, max_labels_count = 500)
 plot(close, color = color.rgb(123,123,123,100))
@@ -7,10 +8,10 @@ plot(close, color = color.rgb(123,123,123,100))
 //     strategy.entry(".", strategy.short )
 
 
-// 計算 & 建立指標 (以 M A C D 為基礎)
-// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
-// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
-// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
+// ■■■■■■ 計算 & 建立指標 (以 M A C D 為基礎)
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ macd   快線
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ signal 慢線
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ hist   方格
 
 // ■■■■■■ ■■■■■■■ M A C D  ■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
 fast_length =12 //input(title = "Fast Length", defval = 12)
@@ -40,9 +41,7 @@ bl_up_0 = ta.crossover(macd,0)
 color_sig_1 = macd > 0
 
 
-
-
-// 持續性信號 (快線斜正)
+// ■■■■■■ 持續性信號 (快線斜正)
 // ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ fast_grow_bool_first  進場信號(只出現一次)
 // ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ fast_grow_bool        開始斜率為正(持續出現)
 // ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ fast_grow_bool_value  開始時的值
@@ -59,29 +58,6 @@ else if macd < macd[1] and macd[1] > macd[2] // 斜率 開始非正
 
 fast_grow_bool_first = fast_grow_bool and not fast_grow_bool[1]
 
-plot(fast_grow_bool_value, "快線斜正起始價格",  linewidth = 4, style =  plot.style_steplinebr ) 
-
-
-
-// 畫出時間標示線 & 快正被景色
-// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
-// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
-// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
-h = str.tostring(hour(time), "00")
-m = str.tostring(minute(time), "00")
-CO_hm = h=="00"and m=="00"? color.blue :(h=="06"or h=="18")and m=="00"?color.green :h=="12" and m=="00"? color.orange: time-time[1] > 2*(time[1]-time[2])? color.red: color(na)
-time_00 = h=="00" and m == "00" ? 0 : h =="12"and m == "00" ? 12 : 99
-plot(CO_hm == color(na)? float(na): close + 0.2 , 
-     color = CO_hm, title = "快線斜正起始價格",  
-     linewidth = 4, style =  plot.style_steplinebr ) 
-plot(CO_hm == color(na)? float(na): close + 0.3 , 
-     color = CO_hm, title = "快線斜正起始價格",  
-     linewidth = 4, style =  plot.style_steplinebr ) 
-
-// 快線>0 背景色
-MACD_plus = input.bool(true, "是否顯示快線>0")
-bgcolor(MACD_plus and color_sig_1 ? color.new(color.green, 80) :na)
-
 
 
 
@@ -96,7 +72,7 @@ bgcolor(MACD_plus and color_sig_1 ? color.new(color.green, 80) :na)
 //■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■
 //■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■
 
-
+// 進出場 行為
 // ■■■■■■ 參數設定 ■■■■■■
 // ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
 // ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
@@ -114,31 +90,7 @@ var float stop_persont = na     // stop_persont        停損設前一根比例
 in_position =                   // in_position         是否有艙位
      strategy.position_size != 0      
 
-
-
-
-
-// ■■■■■■ 進場信號標記 & 
-// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
-// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
-bar_plus = close > open ? true :false // 綠K
-plus_1br = close[1] - open[1]         // 前兩根漲幅 + -
-sig_co = color(na)                    
-
-if plus_1br >0 or not bar_plus
-    sig_co := color.green
-else 
-    sig_co := color.red 
-aa = plus_1br >0 or not bar_plus? "++" :str.tostring( (close - open)/plus_1br *(-1) )
-
-// 進場信號標記
-if entry_signal
-    label.new(bar_index, low - 0.15, aa, color = sig_co, size = size.small, style = label.style_label_up)
-
-
-
-
-
+// 進出場 行為
 // ■■■■■■ 進出場   (邏輯 & 動作)
 // ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
 // ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
@@ -157,7 +109,7 @@ if fast_grow_bool_first and not in_position                    //*******fast_gro
     strategy.entry("Long", strategy.long)
     strategy.exit("close_L", "Long", qty_percent = 100, stop = current_stop_loss, comment = "出場" ) // limit = trigger_price 
 
-
+// 進出場 行為
 // // ■■■■■■ 移動止損邏輯 ■■■■■■
 // // ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
 // // ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
@@ -178,7 +130,62 @@ if in_position
         
     strategy.exit("close_L", "Long", qty_percent = 100, stop = current_stop_loss, comment = "出場" )
 
-// ■■■■■■ 繪製線條 ■■■■■■
+
+
+
+// 繪製動作
+//■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■
+//■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■
+//■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■
+//■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■
+//■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■ ■■■■■■■■■■■
+
+// 繪製動作
+// ■■■■■■ 畫出時間標示線 & 快正被景色
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
+h = str.tostring(hour(time), "00")
+m = str.tostring(minute(time), "00")
+CO_hm = h=="00"and m=="00"? color.blue :(h=="06"or h=="18")and m=="00"?color.green :h=="12" and m=="00"? color.orange: time-time[1] > 2*(time[1]-time[2])? color.red: color(na)
+time_00 = h=="00" and m == "00" ? 0 : h =="12"and m == "00" ? 12 : 99
+
+// ■■■■■■ 時間標記 & 10點標記
+plot(CO_hm == color(na)? float(na): close + 0.2 , 
+     color = CO_hm, title = "快線斜正起始價格",  
+     linewidth = 4, style =  plot.style_steplinebr ) 
+plot(CO_hm == color(na)? float(na): close + 0.3 , 
+     color = CO_hm, title = "快線斜正起始價格",  
+     linewidth = 4, style =  plot.style_steplinebr ) 
+
+// ■■■■■■ 快線>0 背景色
+MACD_plus = input.bool(true, "是否顯示快線>0")
+bgcolor(MACD_plus and color_sig_1 ? color.new(color.green, 80) :na)
+
+// ■■■■■■ 斜正起始標記
+plot(fast_grow_bool_value, "快線斜正起始價格",  linewidth = 4, style =  plot.style_steplinebr ) 
+
+
+// 繪製動作
+// ■■■■■■ 進場信號標記 & 
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
+// ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
+bar_plus = close > open ? true :false // 綠K
+plus_1br = close[1] - open[1]         // 前兩根漲幅 + -
+sig_co = color(na)                    
+
+if plus_1br >0 or not bar_plus
+    sig_co := color.green
+else 
+    sig_co := color.red 
+aa = plus_1br >0 or not bar_plus? "++" :str.tostring( (close - open)/plus_1br *(-1) )
+
+// 進場信號標記
+if entry_signal
+    label.new(bar_index, low - 0.15, aa, color = sig_co, size = size.small, style = label.style_label_up)
+
+
+// 繪製動作
+// ■■■■■■ 觸發價 & 止損價
 // ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
 // ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
 // 進場價格線
@@ -192,10 +199,5 @@ plot(in_position ? trigger_price : na, color=color.orange, linewidth=1, style=pl
 // ■■■■■■ 標記顯示 ■■■■■■
 
 
-
-
-
 // 當前持倉狀態顯示
-bgcolor(in_position ? color.new(color.green, 95) : na, title="持倉狀態")
-
-
+bgcolor(in_position ? color.new(color.yellow, 100) : na, title="持倉狀態")
