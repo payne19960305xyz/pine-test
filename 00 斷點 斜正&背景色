@@ -77,8 +77,8 @@ fast_grow_bool_first = fast_grow_bool and not fast_grow_bool[1]
 // ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
 // ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
 
-// ■■■■■■ 進場信號：開始斜率為正(單次出現) ■■■■■■
-lookback_period = input.int(5, title="止損點回看期間(K線數)", minval=1)                 
+// ■■■■■■ fast_grow_bool_first  進場信號(只出現一次) 
+lookback_period = input.int(3, title="止損點回看期間(K線數)", minval=1)                 
 lowest_N = ta.lowest(low, lookback_period)[1] // lowest_N 指損下探的點位
 entry_signal = fast_grow_bool_first    // fast_grow_bool_first  進場信號(只出現一次)
 // ■■■■■■ 變數宣告 
@@ -198,6 +198,3 @@ plot(in_position ? current_stop_loss : na, color=color.red, linewidth=2, style=p
 plot(in_position ? trigger_price : na, color=color.orange, linewidth=1, style=plot.style_linebr, title="觸發價")
 // ■■■■■■ 標記顯示 ■■■■■■
 
-
-// 當前持倉狀態顯示
-bgcolor(in_position ? color.new(color.yellow, 100) : na, title="持倉狀態")
