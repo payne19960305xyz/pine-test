@@ -1,6 +1,5 @@
-//■■■■■■■■■  ▲✔✘ ==================================================================================== 
 
-A-1	//■■■■■■■■■  ▲✔✘
+A-1	//■■■■■■■■■  ▲✔✘ 考慮" = " 的情況
 upper = high >= ta.highest(high,20)
 lower = low <= ta.lowest(low,20)
 
@@ -26,19 +25,18 @@ if tr_flag //如果過了開始交易日期
                        qty_percent = 100, 
                        limit = strategy.position_avg_price + delta,
                        stop  = strategy.position_avg_price - delta
-                       )        
+                       )      
+					   
+					   
+	//■■■■■■■■■  ▲✔✘ 	switch 範圍設值 <x >=x 而不是 <x >x 要考慮" = " 的情況
+stop_persont = switch true      // stop_persont        停損設定比例
+close>open and x_y_value >= 1 => 1 
+close>open and x_y_value < 1 => math.abs(x_y_value)
+close<open => 1 
 
 
 
 
-
-
-
-
-
-
-
-//■■■■■■■■■   ⍢⎵⍢====================================================================================
 
 
 
