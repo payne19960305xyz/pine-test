@@ -1,0 +1,98 @@
+plot
+bgcolor
+label.new
+plotshape
+
+
+
+
+
+plot
+//■■■■■■■■■  FF (( ■,●,○,□,▼  ))---※Θ★
+plot(in_position ? entry_price : na,
+ color=color.green,
+ linewidth=1,
+ style=plot.style_linebr,
+ title="進場價"
+ )
+ 
+plot.style_line - 連續線條
+plot.style_linebr - 斷續線條
+
+plot.style_stepline - 階梯線
+plot.style_steplinebr - 斷續階梯線
+
+plot.style_area - 填充區域
+plot.style_areabr - 斷續填充區域
+
+plot.style_histogram - 柱狀圖
+plot.style_columns - 直條圖
+
+plot.style_circles - 圓點標記
+plot.style_cross - 十字標記
+
+
+
+bgcolor
+//■■■■■■■■■  FF (( ■,●,○,□,▼  ))---※Θ★
+bgcolor(MACD_plus and color_sig_1 ? color.new(color.green, 80) :na)
+
+
+plotshape
+//■■■■■■■■■  FF (( ■,●,○,□,▼  ))---※Θ★
+plotshape(
+  series = upper or lower,
+  size = size.small,
+  color = co,
+  style = shape.circle,
+  show_last = 200 // 只在最後 200 根 K線顯示
+  )
+series								
+	條件或數值							
+		bool 或 float		控制是否顯示形狀。				
+				- 若為 bool，例如 Val_A == true，代表該 bar 顯示形狀。				決定會不會顯示
+				- 若為 float，則形狀會畫在該價格位置。				決定顯示位置
+location								
+	顯示位置模式							
+		location 常數		控制形狀畫在哪個價格位置上。常見選項：				
+				- location.abovebar: K 棒上方				
+				- location.belowbar: K 棒下方				
+				- location.top: 當前區間高點				
+				- location.bottom: 當前區間低點				
+				- location.absolute: 使用 series 當作價格位置繪圖				series 必須顯示值
+style								
+	形狀樣式							
+		shape 常數		指定形狀類型，例如：				
+				- shape.circle: 圓形				
+				- shape.triangleup: 向上箭頭				
+				- shape.triangledown: 向下箭頭				
+				- shape.cross: 叉叉				
+				- shape.labelup: 上方文字標籤				可以寫各個文字參數
+				- shape.labeldown: 下方文字標籤				
+size								
+	大小							
+		size 常數		控制形狀的大小，常見選項：				
+				- size.small				
+				- size.normal				
+				- size.large				
+				- size.tiny				
+				- size.huge				
+color								
+	顏色							
+		color 常數		形狀的顏色，例如 color.red, color.green, color.purple 等				
+		
+label.new
+//■■■■■■■■■  FF (( ■,●,○,□,▼  ))---※Θ★
+label.new(			
+x, y			
+	決定標籤位置，可用 bar_index + 價格		
+text			
+	支援 \n 多行顯示		
+style			
+	控制文字排列方向（如左、右、中心）		
+	style=label.style_label_left,	
+	參考 label.new 樣式圖
+textcolor, color			
+	文字顏色 , 背景色		
+yloc	yloc.	abovebar / belowbar / price	
+	控制標籤是否浮在上面、下面，或精確價位		
