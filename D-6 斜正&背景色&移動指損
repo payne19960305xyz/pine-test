@@ -197,4 +197,3 @@ plot(in_position ? current_stop_loss : na, color=color.red, linewidth=2, style=p
 // 觸發價線  
 plot(in_position ? trigger_price : na, color=color.orange, linewidth=1, style=plot.style_linebr, title="觸發價")
 // ■■■■■■ 標記顯示 ■■■■■■
-
