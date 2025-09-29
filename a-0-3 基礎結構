@@ -1,0 +1,38 @@
+max_labels_count
+空值表示方式 
+if 結構 
+switch 結構 				
+switch 結構(true)
+ 
+A-3	//■■■■■■■■■  ⛫⛫⛩︎  max_labels_count  建立labels (預設50 最大500)
+indicator("學習用76", overlay=true ,max_polylines_count = 50, max_labels_count = 500)//
+
+A-1	//■■■■■■■■■  ⛫⛫⛩︎  空值表示方式 
+co = color(na)
+
+
+A-1	//■■■■■■■■■  ⛫⛫⛩︎  if 結構 
+if upper 
+    co := color.green
+    if (high-high[1])>=(high[1]-high[2])*3
+        si1 := size.huge
+        co := color.olive
+else if lower
+    co := color.red
+    if (low-low[1])<=(low[1]-low[2])*3 
+        si1 := size.huge
+		
+A-1	//■■■■■■■■■  ⛫⛫⛩︎  switch 結構 				
+stop_persont = switch true      // stop_persont        停損設定比例
+    close>open and x_y_value >= 1 => 1 
+    close>open and x_y_value < 1 => math.abs(x_y_value)
+    close<open => 1 
+	
+	
+	//■■■■■■■■■  ⛫⛫⛩︎  switch 結構(true)
+get_condition(condition_name) =>
+    switch condition_name
+        "快線斜正" =>  fast_grow
+        "快線翻零" =>  bl_up_0
+        "綠深轉淺" =>  green_turn_down
+        => false
