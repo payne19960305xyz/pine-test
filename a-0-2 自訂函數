@@ -1,0 +1,33 @@
+排錯用的 label.new
+時間 字串
+時間輸入方式
+時間輸出方式
+
+
+排錯用的 label.new
+//■■■■■■■■■   ☪𒀹𒀹  排錯用的 label.new
+
+if time == timestamp("UTC+8", 2025,07,21,23,30)    
+    label.new(bar_index, low - 0.30,    
+     "●● = " + str.tostring(●●) +"\n"+     
+     "●● = " + str.tostring(●●)     
+     , size = size.small, style = label.style_label_up)
+	  
+	  	  
+	  
+A-3	//■■■■■■■■■   ☪𒀹𒀹  //時間 字串
+//時間 字串
+formatTime(t) =>
+    y = str.tostring(year(t))
+    m = str.tostring(month(t), "00")
+    d = str.tostring(dayofmonth(t), "00")
+    h = str.tostring(hour(t), "00")
+    min = str.tostring(minute(t), "00")	
+    y + "-" + m + "-" + d + " " + h + ":" + min
+
+B-1	//■■■■■■■■■   ☪𒀹𒀹  時間輸入方式
+var DT = timestamp("UTC+8", 2025,7,18,8,30)
+
+B-4	//■■■■■■■■■   ☪𒀹𒀹  時間輸出方式 
+hr = hour(time)
+min = minute(time)
