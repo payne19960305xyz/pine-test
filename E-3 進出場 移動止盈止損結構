@@ -25,6 +25,11 @@ var bool in_position = false
 // ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ 根據不同策略變換
 
 
+// ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ 會被記錄畫線的變數
+entry_price
+current_stop_loss
+trigger_price
+
 // ■■■■■■ 進場邏輯 ■■■■■■
 if entry_signal and not in_position
     // 記錄進場價格
@@ -85,8 +90,6 @@ plotshape(entry_signal, style=shape.triangleup, location=location.belowbar,
 
 // 當前持倉狀態顯示
 bgcolor(in_position ? color.new(color.green, 95) : na, title="持倉狀態")
-
-
 
 
 
