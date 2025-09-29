@@ -3,7 +3,7 @@
 時間輸入方式
 時間輸出方式
 時間 & 點位標示線
-
+測試時間&點位用 (****)
 
 排錯用的 label.new
 //■■■■■■■■■   ☪𒀹𒀹  排錯用的 label.new
@@ -47,3 +47,32 @@ plot(CO_hm == color(na)? float(na): close + 0.2 ,
 plot(CO_hm == color(na)? float(na): close + 0.3 , 
      color = CO_hm, title = "時間標記",  
      linewidth = 4, style =  plot.style_steplinebr ) 
+
+
+
+
+	//■■■■■■■■■   ☪𒀹𒀹  //測試時間&點位用 (****)
+//signle_length_in = input.int(5)
+//var signle_length = 0
+//var si_value = float(na)
+
+if aa // 輸入布林值
+    signle_length := signle_length_in
+    si_value := close
+
+if signle_length>0
+    signle_length := signle_length - 1
+else
+    si_value := float(na)
+
+plot(si_value,
+ color=color.green,
+ linewidth=5,
+ style=plot.style_steplinebr,
+ title="■■■"
+ )
+
+
+
+
+
