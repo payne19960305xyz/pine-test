@@ -3,6 +3,8 @@ max_labels_count
 if 結構 
 switch 結構 				
 switch 結構(true)
+輸入項的 group
+
  
 A-3	//■■■■■■■■■  ⛫⛫⛩︎  max_labels_count  建立labels (預設50 最大500)
 indicator("學習用76", overlay=true ,max_polylines_count = 50, max_labels_count = 500)//
@@ -36,3 +38,12 @@ get_condition(condition_name) =>
         "快線翻零" =>  bl_up_0
         "綠深轉淺" =>  green_turn_down
         => false
+
+	//■■■■■■■■■  ⛫⛫⛩︎  輸入項的 group
+enterCond1 = input.bool(false, "條件 A", group = "進場條件")
+enterCond2 = input.bool(false, "條件 B", group = "進場條件")
+
+
+
+
+
