@@ -31,3 +31,18 @@ var DT = timestamp("UTC+8", 2025,7,18,8,30)
 B-4	//■■■■■■■■■   ☪𒀹𒀹  時間輸出方式 
 hr = hour(time)
 min = minute(time)
+
+
+
+	//■■■■■■■■■   ☪𒀹𒀹  //時間 & 點位標示線
+h = str.tostring(hour(time), "00")
+m = str.tostring(minute(time), "00")
+CO_hm = h=="00"and m=="00"? color.blue :(h=="06"or h=="18")and m=="00"?color.green :h=="12" and m=="00"? color.orange: time-time[1] > 2*(time[1]-time[2])? color.red: color(na)
+time_00 = h=="00" and m == "00" ? 0 : h =="12"and m == "00" ? 12 : 99
+// ■■■■■■ 時間標記 & 10點標記
+plot(CO_hm == color(na)? float(na): close + 0.2 , 
+     color = CO_hm, title = "時間標記",  
+     linewidth = 4, style =  plot.style_steplinebr ) 
+plot(CO_hm == color(na)? float(na): close + 0.3 , 
+     color = CO_hm, title = "時間標記",  
+     linewidth = 4, style =  plot.style_steplinebr ) 
