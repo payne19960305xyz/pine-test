@@ -1,15 +1,53 @@
 //@version=6
-indicator("學習用59_修正版", overlay=true, format = format.price)
-plot(close, color = color.rgb(123,123,123,100))
+indicator("學習用59", overlay=true, format = format.price, max_labels_count = 500)
 
-//strategy("學習用59_修正版", overlay=true, format = format.price)
-// if high < low 
-//     strategy.entry(".", strategy.short )
+fa = input.int(5)
+sl = input.int(20)
+
+plot(ta.ema(close,fa) ,
+ color=color.white,
+ linewidth=4,
+ style=plot.style_line,
+ title="快"
+ )
+
+plot(ta.ema(close,sl) ,
+ color=color.orange,
+ linewidth=2,
+ style=plot.style_line,
+ title="慢"
+ )
 
 
-// ■■■■■■ 可視化 ■■■■■■ 
-if showcross and not bullish and bullish[1]    
-    line.new(bar_index, close, bar_index + 20, close, color= color.red, width=8)
+// 輸入點
+long = ta.crossover(ta.ema(close,fa),ta.ema(close,sl))  //信號 A (單次信號)   ■■■(需要輸入之處)
+shor = ta.crossunder(ta.ema(close,fa),ta.ema(close,sl)) //信號 B (單次信號)   ■■■(需要輸入之處)
 
-if showcross and bullish and not bullish[1]    
-    line.new(bar_index, close, bar_index + 20, close, color= color.lime, width=8)
+signle_length_in = input.int(5)                     //線段長度(設定)
+var signle_length = 0                               //線段長度(當下)
+var si_value = float(na)                            //線段值
+var si_color = color(na)                            //線段顏色
+
+if long                                             //信號 A 確立
+    signle_length := signle_length_in               
+    si_value := close
+    si_color := color.rgb(191, 240, 185)                       //信號 顏色A ■■■
+
+if shor                                             //信號 B 確立
+    signle_length := signle_length_in               
+    si_value := close
+    si_color := color.rgb(255, 162, 232)                        //信號 顏色B ■■■
+
+if signle_length>0                                  //長度逐次遞減
+    signle_length := signle_length - 1
+else
+    si_value := float(na)
+
+plot(si_value,                                      //信號繪製
+ color = si_color,
+ linewidth=5,
+ style=plot.style_steplinebr,
+ title="■■■"
+ )
+
+
