@@ -1,5 +1,11 @@
 //@version=6
-indicator("學習用59", overlay=true, format = format.price, max_labels_count = 500)
+indicator("學習用59_修正版", overlay=true, format = format.price)
+plot(close, color = color.rgb(123,123,123,100))
+
+//strategy("學習用59_修正版", overlay=true, format = format.price)
+// if high < low 
+//     strategy.entry(".", strategy.short )
+
 
 fa = input.int(5)
 sl = input.int(20)
