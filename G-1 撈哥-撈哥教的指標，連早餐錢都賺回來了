@@ -182,3 +182,100 @@ plot(CO_hm == color(na)? float(na): close + 0.2 ,
 plot(CO_hm == color(na)? float(na): close + 0.3 , 
      color = CO_hm, title = "時間標記",  
      linewidth = 4, style =  plot.style_steplinebr ) 
+
+
+
+
+// 副視窗
+// ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ 
+// ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ 
+// ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ 
+// ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ 
+// ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ 
+// ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ 
+// ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ 
+// ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ 
+// ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ 
+// ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ 
+// ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ 
+// ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ 
+// ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ 
+// ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ 
+// ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ 
+// ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ 
+// ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ 
+// ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ 
+// ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ 
+// ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ ■■■■■■ 
+
+
+
+
+//@version=6
+indicator(title="副窗 MACD ", overlay = false,max_boxes_count = 500, max_labels_count = 500, max_lines_count = 500, max_polylines_count = 100)
+
+length = input.int(title="Length", defval=20, minval=0)
+
+bband(length, mult) =>
+	ta.sma(close, length) + mult * ta.stdev(close, length)
+
+keltner(length, mult) =>
+	ta.ema(close, length) + mult * ta.ema(ta.tr, length)
+
+e1 = (ta.highest(high, length) + ta.lowest(low, length)) / 2 + ta.sma(close, length)
+osc = ta.linreg(close - e1 / 2, length, 0)
+diff = bband(length, 2) - keltner(length, 1)
+osc_color = osc[1] < osc[0] ? (osc[0] >= 0 ? #00ffff : #cc00cc) : osc[0] >= 0 ? #009b9b : #ff9bff
+mid_color = diff >= 0 ? color.green : color.red
+
+plot(osc, color=osc_color, style=plot.style_histogram, linewidth=2)
+plot(0, color=mid_color, style=plot.style_circles, linewidth=3)
+
+
+//信號 A (單次信號)   ■■■(需要輸入之處)
+long1 = osc_color==#00ffff or osc_color ==#009b9b
+//信號 B (單次信號)   ■■■(需要輸入之處)
+shor1 = osc_color==#ff9bff or osc_color ==#cc00cc
+
+signle_length_in1 = input.int(5)                     //線段長度(設定)
+var signle_length1 = 0                               //線段長度(當下)
+var si_value1 = float(na)                            //線段值
+var si_color1 = color(na)                            //線段顏色
+
+if long1                                             //信號 A 確立
+    signle_length1 := signle_length_in1               
+    si_value1 := 0.1
+    si_color1 := color.rgb(0, 183, 255)                       //信號 顏色A ■■■
+
+if shor1                                             //信號 B 確立
+    signle_length1 := signle_length_in1               
+    si_value1 := -0.1
+    si_color1 := color.rgb(248, 1, 13)                        //信號 顏色B ■■■
+
+if signle_length1>0                                  //長度逐次遞減
+    signle_length1 := signle_length1 - 1
+else
+    si_value1 := float(na)
+
+plot(si_value1,                                      //信號繪製
+ color = si_color1,
+ linewidth=5,
+ style=plot.style_steplinebr,
+ title="■■■"
+ )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
