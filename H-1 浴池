@@ -2,6 +2,8 @@
 strategy("學習用59_修正版", overlay=true, format = format.price)
 plot(close, color = color.rgb(123,123,123,100))
 
+https://cn.tradingview.com/script/AqXxNS7j-Chandelier-Exit/
+https://cn.tradingview.com/script/3LGnSrQN-ZLSMA-Zero-Lag-LSMA/
 
 // if high < low 
 //     strategy.entry(".", strategy.short )
