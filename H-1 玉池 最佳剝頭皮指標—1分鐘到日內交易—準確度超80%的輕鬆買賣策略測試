@@ -8,6 +8,9 @@ plot(close, color = color.rgb(123,123,123,100))
 //指標網址
 //https://cn.tradingview.com/script/AqXxNS7j-Chandelier-Exit/
 //https://cn.tradingview.com/script/3LGnSrQN-ZLSMA-Zero-Lag-LSMA/
+//3/1/5.05  幾根K 止損  止營
+
+
 
 
 
