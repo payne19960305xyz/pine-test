@@ -2,12 +2,14 @@
 strategy("學習用59_修正版", overlay=true, format = format.price)
 plot(close, color = color.rgb(123,123,123,100))
 
-https://www.youtube.com/watch?v=LamLdvIKGKA
-https://cn.tradingview.com/script/AqXxNS7j-Chandelier-Exit/
-https://cn.tradingview.com/script/3LGnSrQN-ZLSMA-Zero-Lag-LSMA/
 
-// if high < low 
-//     strategy.entry(".", strategy.short )
+//來源影片
+//https://www.youtube.com/watch?v=LamLdvIKGKA
+//指標網址
+//https://cn.tradingview.com/script/AqXxNS7j-Chandelier-Exit/
+//https://cn.tradingview.com/script/3LGnSrQN-ZLSMA-Zero-Lag-LSMA/
+
+
 
 // CE 
 //■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■
@@ -77,16 +79,17 @@ plot(zlsma, color=color.yellow, linewidth=3)
 
 
 
+
+
+
+
 // 計算&繪圖
-//■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ sig_A 多單進場信號
+//■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ sig_A  信號 A (單次信號)   
 //■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■
-//■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■
-//■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■
+
 // zlsma
 // ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
-
 bgcolor(close > zlsma ? color.new(color.green, 50) :na)
-
 // CE 指標
 // ■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■ 
 
@@ -123,13 +126,31 @@ plot(si_value,                                      //信號繪製
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // 進出場
 //■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■
 //■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■
 //■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■
 //■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■ ■■■■■
-
-
 
 
 
@@ -144,12 +165,13 @@ plot(si_value,                                      //信號繪製
 var float entry_price1 = na      // entry_price         進場價格
 lookback_period = input.int(3, title="止損回顧幾根K", minval=1)
 lowest_per = input.float(1.00, "止損趴數")
+highest_per = input.float(1.50, "止營趴數")
 
 //lowest_N 指損下探的點位
-lowest_N_cal = close - ( close - ta.lowest(low, lookback_period)[1])*lowest_per 
+lowest_N_cal = close - ( close - ta.lowest(low, lookback_period)[1])*lowest_per
 var float lowest_N = na // 
 //limitest 止營
-limitest_cal = close + ( close - lowest_N_cal)*1.5  
+limitest_cal = close + ( close - ta.lowest(low, lookback_period)[1])*highest_per
 var float limitest = na // 
 
 in_position =                   // in_position         是否有艙位
@@ -163,18 +185,18 @@ if sig_A and not in_position
     entry_price1 := close
     lowest_N := lowest_N_cal
     limitest := limitest_cal    
-        
+
     // 執行買入 & 並同時建立 止損止營
     strategy.entry("Long", strategy.long)
     strategy.exit("close_L", "Long", qty_percent = 100, limit = limitest,   stop =lowest_N, comment = "出場" ) 
 
+if sig_A and in_position
+    entry_price1 := close
+    lowest_N := lowest_N_cal
+    limitest := limitest_cal    
 
-// in_position :=                   // in_position         是否有艙位
-//      strategy.position_size != 0      
-// if not in_position
-//     entry_price1 := na
-//     lowest_N := na
-//     limitest := na
+    // 重新建立 止損止營
+    strategy.exit("close_L", "Long", qty_percent = 100, limit = limitest,   stop =lowest_N, comment = "出場" ) 
 
 
 // 畫線
