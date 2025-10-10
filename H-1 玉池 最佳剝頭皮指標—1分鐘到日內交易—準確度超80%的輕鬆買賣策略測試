@@ -3,14 +3,20 @@ strategy("學習用59_修正版", overlay=true, format = format.price)
 plot(close, color = color.rgb(123,123,123,100))
 
 
+
 //來源影片
+//玉池  最佳剝頭皮指標—1分鐘到日內交易—準確度超80%的輕鬆買賣策略測試
 //https://www.youtube.com/watch?v=LamLdvIKGKA
+
 //指標網址
+
+//Chandelier Exit
 //https://cn.tradingview.com/script/AqXxNS7j-Chandelier-Exit/
+
+//ZLSMA - Zero Lag LSMA
 //https://cn.tradingview.com/script/3LGnSrQN-ZLSMA-Zero-Lag-LSMA/
+
 //3/1/5.05  幾根K 止損  止營
-
-
 
 
 
